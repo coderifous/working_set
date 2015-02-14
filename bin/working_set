@@ -1,0 +1,40 @@
+#!/usr/bin/env ruby
+
+# require 'bundler/setup'
+
+require 'celluloid/io'
+require 'celluloid/autostart'
+require 'ncurses'
+
+# $:.unshift File.join(File.dirname(__FILE__), "lib")
+
+require 'constants'
+require 'basic_actor'
+require 'set_builder_adapter/ag'
+require 'views/working_set_view'
+require 'set_viewer_actor'
+require 'set_builder_actor'
+require 'user_input_actor'
+require 'api_input_actor'
+require 'working_set_item'
+require 'working_set'
+
+if ARGV.to_s =~ /--debug=(\d+)/
+  require 'socket'
+  $DEBUG_CONSOLE ||= TCPSocket.new 'localhost', $1.to_i
+end
+
+class Object
+  def debug_message(msg)
+    $DEBUG_CONSOLE.puts msg if $DEBUG_CONSOLE
+  end
+end
+
+class AppGroup < Celluloid::SupervisionGroup
+  supervise SetViewerActor,  as: :set_viewer
+  supervise SetBuilderActor, as: :set_builder
+  supervise ApiInputActor,   as: :api_input
+  supervise UserInputActor,  as: :user_input
+end
+
+AppGroup.run
