@@ -241,13 +241,14 @@ class WorkingSetView
   end
 
   def selected_item_scroll_delta
+    scroll_padding = 2
     debug_message "#{@selected_item_line_number} | #{scroll_top} | #{scroll_bottom}"
     if scroll_top > @selected_item_line_number
       # scroll up
-      (scroll_top - @selected_item_line_number) * -1
+      ((scroll_top - @selected_item_line_number) * -1) - scroll_padding
     elsif scroll_bottom < @selected_item_line_number
       # scroll down
-      @selected_item_line_number - scroll_bottom + 1
+      @selected_item_line_number - scroll_bottom + scroll_padding
     else
       0
     end
