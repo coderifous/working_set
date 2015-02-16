@@ -29,6 +29,8 @@ class UserInputActor
         publish "select_next_file"
       when 16 # ctrl-p
         publish "select_prev_file"
+      when 13
+        publish "tell_selected_item"
       end
     end
   end
