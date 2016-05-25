@@ -3,6 +3,8 @@ require 'open3'
 module SetBuilderAdapter
   class Ag
 
+    class ParserError < StandardError; end
+
     class Parser
       attr_accessor :input, :parsed_items, :current_item
 
@@ -44,13 +46,13 @@ module SetBuilderAdapter
         # A new item is started when the current item has no path, or if the
         # path for the current result line doesn't match the current item's file
         # path.
-        if current_item == nil or (line != "--" and not line.start_with?(current_item[:file_path]))
+        if current_item == nil or (line != "--" and line != "" and not line.start_with?(current_item[:file_path]))
           line =~ /^(.*?):\d/
           new_item_with_file_path $1
         end
 
         # The line can be either a pre or post match for the current item
-        if line =~ /^(.*):(\d+)-(.*)/
+        if line =~ /^(.*?):(\d+)-(.*)/
           if current_item[:match_line]
             add :post_match_lines, $3
           else
@@ -58,7 +60,7 @@ module SetBuilderAdapter
           end
 
         # The line can be the actual match itself
-        elsif line =~ /^(.*):(\d+):(\d+):(.*)/ # match line
+        elsif line =~ /^(.*?):(\d+):(\d+):(.*)/ # match line
           if current_item[:match_line]
             new_item_with_file_path current_item[:file_path]
           end
@@ -70,28 +72,37 @@ module SetBuilderAdapter
         elsif line =~ /--/
           new_item_with_file_path current_item[:file_path]
 
+        # Weird exception: a blank line will be ignored.
+        elsif line == ""
+
         # Otherwise big fat fail.
         else
-          raise "parse error #{line}"
+          raise ParserError.new("parse_line failed for: #{line.inspect}")
         end
       end
 
     end
 
     def command(search)
-      "ag -C1 --line-numbers --column #{search} ."
+      "ag -C1 --line-numbers --column --nogroup --literal #{search} ."
     end
 
     def parse_results(results)
       Parser.new(results).parse
+    rescue ParserError => e
+      STDERR.puts e
+      raise e
     end
 
     def build_working_set(search)
-      stdout, stderr, status = Open3.capture3(command(search))
-      if status == 0
+      # stdout, stderr, status = Open3.capture3(command(search))
+      # if status == 0
+      stdout = `#{command(search)}`
+      if $?.exitstatus == 0
         WorkingSet.new search, parse_results(stdout)
       else
-        raise "ag command failed: #{stdout} #{stderr}"
+        # raise "ag command failed: #{stdout} #{stderr}"
+        raise "ag command failed with status #{$?.exitstatus.inspect}: #{stdout}"
       end
     end
 

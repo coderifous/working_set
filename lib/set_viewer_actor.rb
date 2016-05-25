@@ -66,7 +66,7 @@ class SetViewerActor
   end
 
   def show_error(_, error)
-    Ncurses.stdscr.mvaddstr 0, 0, error.inspect
+    Ncurses.stdscr.mvaddstr 0, 0, "SetViewerActor#show_error: #{error.backtrace}"
     Ncurses.stdscr.refresh
   end
 
