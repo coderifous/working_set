@@ -22,7 +22,8 @@ class UserInputActor
       when ?z.ord
         publish "show_match_lines_toggled"
       when ?q.ord
-        Celluloid.shutdown
+        $supervisor.do_shutdown
+        break
       when ?j.ord
         publish "select_next_item"
       when ?k.ord

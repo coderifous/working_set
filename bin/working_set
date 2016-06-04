@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 
-# require 'bundler/setup'
+# require 'bundler/setup' # DEV ONLY
 
+require 'celluloid/current'
 require 'celluloid/io'
-require 'celluloid/autostart'
 require 'ncurses'
 
 # $:.unshift File.join(File.dirname(__FILE__), "lib")
@@ -30,11 +30,21 @@ class Object
   end
 end
 
-class AppGroup < Celluloid::SupervisionGroup
-  supervise SetViewerActor,  as: :set_viewer
-  supervise SetBuilderActor, as: :set_builder
-  supervise ApiInputActor,   as: :api_input
-  supervise UserInputActor,  as: :user_input
+class AppGroup < Celluloid::Supervision::Container
+  supervise type: SetViewerActor,  as: :set_viewer
+  supervise type: SetBuilderActor, as: :set_builder
+  supervise type: ApiInputActor,   as: :api_input
+  supervise type: UserInputActor,  as: :user_input
+
+  # It seems exiting cleanly requires:
+  #   - shutdown: to kill the supervised actors
+  #   - terminate: to kill the supervisor itself
+  def do_shutdown
+    shutdown
+    terminate
+  end
+
 end
 
-AppGroup.run
+$supervisor = AppGroup.run!
+sleep 0.5 while $supervisor.alive?
