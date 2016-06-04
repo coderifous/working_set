@@ -1,6 +1,8 @@
 class UserInputActor
   include BasicActor
 
+  finalizer :clean_up
+
   DEFAULT_SCROLL_STEP = 5
 
   def initialize
@@ -8,7 +10,7 @@ class UserInputActor
   end
 
   def watch_input
-    while(ch = Ncurses.getch)
+    while(ch = Ncurses.stdscr.getch)
       debug_message "getch: #{ch}"
       case ch
       when Ncurses::KEY_DOWN
@@ -33,6 +35,10 @@ class UserInputActor
         publish "tell_selected_item"
       end
     end
+  end
+
+  def clean_up
+    debug_message "done user input"
   end
 
 end

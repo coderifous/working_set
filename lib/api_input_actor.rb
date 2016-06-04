@@ -33,6 +33,7 @@ class ApiInputActor
   end
 
   def close_server
+    debug_message "closing server" if @server
     @server.close if @server
   end
 

@@ -87,6 +87,7 @@ class SetViewerActor
   end
 
   def clean_up
+    debug_message "cleaning up Ncurses"
     Ncurses.echo
     Ncurses.nocbreak
     Ncurses.nl
