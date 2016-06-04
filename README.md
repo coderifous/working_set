@@ -21,6 +21,29 @@ from your text editor which you should run in a separate terminal.
 
 Currently only a vim plugin exists.  Install that plugin.  Read it's stuff.
 
+Working Set command keys:
+
+q      - quit working_set
+r      - refresh search results
+j      - move cursor to next match
+k      - move cursor to previous match
+ctrl+n - move cursor to next file
+ctrl+p - move cursor to prev file
+z      - fold search results to just show files
+
+Todo:
+* Switch to file sockets that live in the CWD so multiple instances can run at
+  the same time.
+* Add support for searching straight from working_set using "/" key.
+* Add support for setting search argument prefix as working_set command argument.
+  e.g. --prefix="--ignore=tmp,vendor"
+* Add help screen that shows commands.
+* Add support for bookmarks.
+* Add support for search history.
+* Add support for customzing command keys.
+* Document protocol so other plugin editors can exist.
+* Document adapter so other search tools can be used.
+
 ## Development
 
 1) Edit the source code.
