@@ -32,8 +32,6 @@ ctrl+p - move cursor to prev file
 z      - fold search results to just show files
 
 Todo:
-* Switch to file sockets that live in the CWD so multiple instances can run at
-  the same time.
 * Add support for searching straight from working_set using "/" key.
 * Add support for setting search argument prefix as working_set command argument.
   e.g. --prefix="--ignore=tmp,vendor"
