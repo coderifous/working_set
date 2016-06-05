@@ -98,7 +98,7 @@ module SetBuilderAdapter
       # stdout, stderr, status = Open3.capture3(command(search))
       # if status == 0
       stdout = `#{command(search)}`
-      if $?.exitstatus == 0
+      if $?.exitstatus == 0 || $?.exitstatus == 1
         WorkingSet.new search, parse_results(stdout)
       else
         # raise "ag command failed: #{stdout} #{stderr}"
