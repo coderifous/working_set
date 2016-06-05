@@ -8,7 +8,7 @@ class ApiInputActor
 
   def initialize
     subscribe "respond_client", :respond_client
-    @server = TCPServer.new API_PORT_NUMBER
+    @server = UNIXServer.new $SOCKET_PATH
     async.watch_input
   end
 
@@ -35,6 +35,7 @@ class ApiInputActor
   def close_server
     debug_message "closing server" if @server
     @server.close if @server
+    File.delete($SOCKET_PATH)
   end
 
   def respond_client(_, arg_array)
@@ -47,4 +48,3 @@ class ApiInputActor
     @client.puts [msg, arg].join("|") if @client
   end
 end
-

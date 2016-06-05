@@ -24,6 +24,11 @@ if ARGV.to_s =~ /--debug=(\d+)/
   $DEBUG_CONSOLE ||= TCPSocket.new 'localhost', $1.to_i
 end
 
+$SOCKET_PATH = ".working_set_socket"
+if ARGV.to_s =~ /(?:--socket|-S)=([\/a-zA-Z0-9_.-]+)/
+  $SOCKET_PATH = $1
+end
+
 class Object
   def debug_message(msg)
     $DEBUG_CONSOLE.puts msg if $DEBUG_CONSOLE
