@@ -9,19 +9,26 @@ Installing the gem adds the working_set command to your path.
 
     $ gem install working_set
 
-Then just run working_set from your project's root directory.
+## Usage
+
+Run the working_set command in your project's directory.
 
     $ cd my-project
     $ working_set
 
-working_set is now running, listening on a socket, ready to receive commands
-from your text editor which you should run in a separate terminal.
+working_set is now running, listening on a file socket, ready to receive
+commands from your text editor which you should run in a separate terminal but
+in the same directory.
 
-## Usage
+    $ cd my-project
+    $ vim
 
-Currently only a vim plugin exists.  Install that plugin.  Read it's stuff.
+Currently only a vim plugin for working_set exists.  Install that plugin.  Read
+it's docs.
 
-Working Set command keys:
+## Commands in working_set
+
+working_set command keys:
 
 q      - quit working_set
 r      - refresh search results
@@ -38,7 +45,7 @@ Todo:
 * Add help screen that shows commands.
 * Add support for bookmarks.
 * Add support for search history.
-* Add support for customzing command keys.
+* Add support for customizing command keys.
 * Document protocol so other plugin editors can exist.
 * Document adapter so other search tools can be used.
 
