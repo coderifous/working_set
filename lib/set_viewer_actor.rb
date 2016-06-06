@@ -23,23 +23,28 @@ class SetViewerActor
   end
 
   def scroll(_, delta)
+    return unless @working_set_view
     @working_set_view.scroll(delta)
   end
 
   def refresh(_)
+    return unless @working_set_view
     # triggers search again without changing search term
     publish "search_changed", @working_set_view.working_set.search
   end
 
   def toggle_match_lines(_)
+    return unless @working_set_view
     @working_set_view.toggle_match_lines
   end
 
   def select_next_file(_)
+    return unless @working_set_view
     @working_set_view.select_next_file
   end
 
   def select_prev_file(_)
+    return unless @working_set_view
     @working_set_view.select_prev_file
     unless @working_set_view.selected_item_in_view?
       publish "scroll_changed", @working_set_view.selected_item_scroll_delta
@@ -47,6 +52,7 @@ class SetViewerActor
   end
 
   def select_next_item(_)
+    return unless @working_set_view
     @working_set_view.select_next_item
     unless @working_set_view.selected_item_in_view?
       publish "scroll_changed", @working_set_view.selected_item_scroll_delta
@@ -54,6 +60,7 @@ class SetViewerActor
   end
 
   def select_prev_item(_)
+    return unless @working_set_view
     @working_set_view.select_prev_item
     unless @working_set_view.selected_item_in_view?
       publish "scroll_changed", @working_set_view.selected_item_scroll_delta
@@ -61,6 +68,7 @@ class SetViewerActor
   end
 
   def tell_selected_item(_)
+    return unless @working_set_view
     item = @working_set_view.selected_item
     publish "respond_client", [item.file_path, item.row, item.column]
   end
