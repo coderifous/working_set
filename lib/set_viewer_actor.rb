@@ -68,9 +68,12 @@ class SetViewerActor
   end
 
   def tell_selected_item(_)
-    return unless @working_set_view
-    item = @working_set_view.selected_item
-    publish "respond_client", [item.file_path, item.row, item.column]
+    if @working_set_view
+      item = @working_set_view.selected_item
+      publish "respond_client", [item.file_path, item.row, item.column]
+    else
+      publish "respond_client", []
+    end
   end
 
   def show_error(_, error)
