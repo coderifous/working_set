@@ -26,6 +26,28 @@ in the same directory.
 Currently only a vim plugin for working_set exists.  Install that plugin.  Read
 it's docs.
 
+## Options
+
+Modify the behavior of working_set with these flags:
+
+  --watch
+
+    Tells working_set to monitor the filesystem for changes and refresh the
+    search results automatically when changes are detected.  The value should be
+    point at the directory you want to monitor.
+
+    Example: --watch=src
+
+    Default: none, search results will not automatically refresh.
+
+  --socket | -S
+
+    Sets the path for the socket file to create.
+
+    Example: --socket=/tmp/my-special-project
+
+    Default: .working_set_socket
+
 ## Commands in working_set
 
 working_set command keys:

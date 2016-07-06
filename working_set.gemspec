@@ -24,4 +24,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "celluloid-io", "~> 0.17.3"
   spec.add_dependency "celluloid-supervision", "~> 0.20.5"
   spec.add_dependency "ncurses-ruby", "~> 1"
+  spec.add_dependency "listen", "~> 3.1"
 end
