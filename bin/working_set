@@ -62,3 +62,4 @@ end
 
 $supervisor = AppGroup.run!
 sleep 0.5 while $supervisor.alive?
+require 'clipboard'
