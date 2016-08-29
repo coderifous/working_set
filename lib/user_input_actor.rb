@@ -21,6 +21,8 @@ class UserInputActor
         publish "refresh"
       when ?z.ord
         publish "show_match_lines_toggled"
+      when ?y.ord
+        publish "copy_selected_item"
       when ?q.ord
         $supervisor.do_shutdown
         break

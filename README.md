@@ -59,6 +59,7 @@ k      - move cursor to previous match
 ctrl+n - move cursor to next file
 ctrl+p - move cursor to prev file
 z      - fold search results to just show files
+y      - copy currently selected line
 
 Todo:
 * Add support for searching straight from working_set using "/" key.

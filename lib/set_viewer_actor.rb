@@ -5,6 +5,7 @@ class SetViewerActor
 
   def initialize
     subscribe "tell_selected_item", :tell_selected_item
+    subscribe "copy_selected_item", :copy_selected_item
     subscribe "set_build_finished", :refresh_view
     subscribe "set_build_failed", :show_error
     subscribe "scroll_changed", :scroll
@@ -73,6 +74,13 @@ class SetViewerActor
       publish "respond_client", [item.file_path, item.row, item.column]
     else
       publish "respond_client", []
+    end
+  end
+
+  def copy_selected_item(_)
+    if @working_set_view
+      item = @working_set_view.selected_item
+      Clipboard.copy item.match_line
     end
   end
 
