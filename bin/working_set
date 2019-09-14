@@ -60,6 +60,20 @@ class AppGroup < Celluloid::Supervision::Container
 
 end
 
+def check_for_existing_socket_file
+  if File.exists?($SOCKET_PATH)
+    puts "File #{$SOCKET_PATH.inspect} exists. Overwrite it? (y/N)"
+    if STDIN.getch =~ /y/i
+      File.delete($SOCKET_PATH)
+    else
+      puts "Ok, exiting program."
+      exit
+    end
+  end
+end
+
+check_for_existing_socket_file
+
 $supervisor = AppGroup.run!
 sleep 0.5 while $supervisor.alive?
 require 'clipboard'
