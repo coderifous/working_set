@@ -65,8 +65,9 @@ class WorkingSetView
   def restore_selection_state(from_working_set_view)
     if idx = sorted_items.find_index(from_working_set_view.selected_item)
       self.selected_item_index = idx
-      self.scroll_top          = from_working_set_view.scroll_top
       self.show_match_lines    = from_working_set_view.show_match_lines
+      render # have to render to set @scrollable_line_count or the next call won't work
+      set_scroll_top(from_working_set_view.scroll_top)
     end
   end
 
@@ -127,18 +128,21 @@ class WorkingSetView
 
   def scroll(delta)
     return if @scrollable_line_count <= scrollable_height
-
-    self.scroll_top = if scroll_top + delta < 0
-      # Reached top
-      0
-    elsif scroll_bottom + delta > @scrollable_line_count
-      # Reached bottom
-      @scrollable_line_count - scrollable_height
-    else
-      # Normal scroll
-      scroll_top + delta
-    end
+    set_scroll_top(scroll_top + delta)
     render
+  end
+
+  def set_scroll_top(value)
+    self.scroll_top = if value < 2
+                        # Reached top
+                        0
+                      elsif (value + scrollable_height) > @scrollable_line_count
+                        # Reached bottom
+                        [@scrollable_line_count - scrollable_height, 0].max
+                      else
+                        # Normal scroll
+                        value
+                      end
   end
 
   def scrollable_height
