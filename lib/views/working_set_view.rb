@@ -204,7 +204,8 @@ class WorkingSetView
         end
 
         # Print match line.
-        print_scrollable_item 0, :yellow, "#{item == selected_item ? ">" : " "} #{item.row}"
+        print_scrollable_item 0, :blue, "#{item == selected_item ? ">" : " "}" #{item.row}"
+        print_scrollable_item 2, :yellow, item.row
         puts_scrollable_item 5, :yellow, item.match_line
 
         # Print post-match lines.
