@@ -62,6 +62,14 @@ class WorkingSetView
     working_set.items[selected_item_index]
   end
 
+  def restore_selection_state(from_working_set_view)
+    if idx = working_set.items.find_index(from_working_set_view.selected_item)
+      self.selected_item_index = idx
+      self.scroll_top          = from_working_set_view.scroll_top
+      self.show_match_lines    = from_working_set_view.show_match_lines
+    end
+  end
+
   def title
     if working_set.name
       "Name: #{working_set.name}"

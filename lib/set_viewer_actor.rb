@@ -20,7 +20,11 @@ class SetViewerActor
   end
 
   def refresh_view(_, working_set)
+    prev_wsv = @working_set_view
     @working_set_view = WorkingSetView.new(working_set)
+    if prev_wsv&.working_set&.search == working_set.search
+      @working_set_view.restore_selection_state(prev_wsv)
+    end
     @working_set_view.render
   end
 

@@ -25,4 +25,11 @@ class WorkingSetItem
     str
   end
 
+  def ==(other)
+    file_path == other.file_path &&
+      row == other.row &&
+      column == other.column &&
+      match_line == other.match_line
+  end
+
 end
