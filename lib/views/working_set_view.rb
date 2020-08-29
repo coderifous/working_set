@@ -42,7 +42,7 @@ class WorkingSetView
   def index_files(working_set)
     index = {}
     prev_file = nil
-    working_set.items.each_with_index do |item, idx|
+    items.each_with_index do |item, idx|
       if prev_file == nil
         # first item in set
         prev_file = index[item.file_path] = { file_path: item.file_path, item_index: idx, prev_file: nil }
@@ -59,11 +59,11 @@ class WorkingSetView
   end
 
   def selected_item
-    working_set.items[selected_item_index]
+    items[selected_item_index]
   end
 
   def restore_selection_state(from_working_set_view)
-    if idx = working_set.items.find_index(from_working_set_view.selected_item)
+    if idx = items.find_index(from_working_set_view.selected_item)
       self.selected_item_index = idx
       self.scroll_top          = from_working_set_view.scroll_top
       self.show_match_lines    = from_working_set_view.show_match_lines
@@ -116,7 +116,7 @@ class WorkingSetView
   end
 
   def select_next_item
-    self.selected_item_index += 1 unless selected_item_index >= working_set.items.size - 1
+    self.selected_item_index += 1 unless selected_item_index >= items.size - 1
     render
   end
 
