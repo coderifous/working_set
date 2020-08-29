@@ -42,7 +42,7 @@ class WorkingSetView
   def index_files(working_set)
     index = {}
     prev_file = nil
-    items.each_with_index do |item, idx|
+    sorted_items.each_with_index do |item, idx|
       if prev_file == nil
         # first item in set
         prev_file = index[item.file_path] = { file_path: item.file_path, item_index: idx, prev_file: nil }
@@ -59,11 +59,11 @@ class WorkingSetView
   end
 
   def selected_item
-    items[selected_item_index]
+    sorted_items[selected_item_index]
   end
 
   def restore_selection_state(from_working_set_view)
-    if idx = items.find_index(from_working_set_view.selected_item)
+    if idx = sorted_items.find_index(from_working_set_view.selected_item)
       self.selected_item_index = idx
       self.scroll_top          = from_working_set_view.scroll_top
       self.show_match_lines    = from_working_set_view.show_match_lines
@@ -86,8 +86,8 @@ class WorkingSetView
     !working_set.saved
   end
 
-  def items
-    working_set.items
+  def sorted_items
+    @_sorted_items ||= working_set.items.sort_by { |i| "#{i.file_path}:#{i.row}"  }
   end
 
   def render
@@ -116,7 +116,7 @@ class WorkingSetView
   end
 
   def select_next_item
-    self.selected_item_index += 1 unless selected_item_index >= items.size - 1
+    self.selected_item_index += 1 unless selected_item_index >= sorted_items.size - 1
     render
   end
 
@@ -170,7 +170,7 @@ class WorkingSetView
     @scrollable_line_number = 0
     @scrollable_line_count  = 0
 
-    items.each do |item|
+    sorted_items.each do |item|
 
       if !show_match_lines
         if item.file_path != previous_file_path
