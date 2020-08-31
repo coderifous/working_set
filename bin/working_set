@@ -18,6 +18,7 @@ require 'user_input_actor'
 require 'api_input_actor'
 require 'working_set_item'
 require 'working_set'
+require 'clipboard'
 
 if ARGV.to_s =~ /--debug=(\d+)/
   require 'socket'
@@ -75,5 +76,6 @@ end
 check_for_existing_socket_file
 
 $supervisor = AppGroup.run!
+
+# It seems we need to occupy the main thread otherwise the program exits here.
 sleep 0.5 while $supervisor.alive?
-require 'clipboard'
