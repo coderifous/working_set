@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["jim@thegarvin.com"]
   spec.summary       = %q{Code search companion for your terminal-based text editor.}
   spec.description   = %q{It's an ncurses-based thing.}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/coderifous/working_set"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
