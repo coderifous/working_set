@@ -30,5 +30,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "listen", "~> 3.2"
   spec.add_dependency "clipboard", "~> 1.3"
   spec.add_dependency "tty-option", "~> 0.1"
+  spec.add_dependency "tty-logger", "~> 0.4"
 
 end

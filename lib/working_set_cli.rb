@@ -28,6 +28,26 @@ class WorkingSetCli
     desc "Very fast searching powered by `ag`, convenient ncurses-based interface, robust editor integration via bi-directional socket API."
     desc "Pairs great with tmux and vim."
 
+    example <<~EOS
+    Run with defaults:
+      $ working_set
+    EOS
+
+    example <<~EOS
+    Specify socket file:
+      $ working_set --socket=/tmp/ws_sock
+    EOS
+
+    example <<~EOS
+    Enable watching and auto-refresh for current directory:
+      $ working_set --watch
+    EOS
+
+    example <<~EOS
+    Enable watching and auto-refresh for specific directory, e.g. the app/ directory of a rails project:
+      $ working_set --watch app
+    EOS
+
   end
 
   flag :help do
@@ -36,12 +56,10 @@ class WorkingSetCli
     desc "Print usage"
   end
 
-  option :debug do
-    hidden
-    short "-d"
-    long "--debug=number"
-    convert :int
-    validate /\d{4,5}/
+  option :watch do
+    desc "Auto-refresh working set when file changes detected"
+    short "-w"
+    long "--watch=[path]"
   end
 
   option :socket do
@@ -51,10 +69,11 @@ class WorkingSetCli
     default ".working_set_socket"
   end
 
-  option :watch do
-    desc "Auto-refresh working set when file changes detected"
-    short "-w"
-    long "--watch=path"
+  option :debug do
+    hidden
+    desc "Set path for debug logging."
+    short "-d"
+    long "--debug=[path]"
   end
 
   def run
@@ -120,8 +139,15 @@ class WorkingSetCli
 
   def init_debug
     if params.key?(:debug)
-      require 'socket'
-      $DEBUG_CONSOLE ||= TCPSocket.new 'localhost', params[:debug] || 4444
+      require 'tty-logger'
+      path = params[:debug] || "working_set.log"
+      log_file = File.open(path, "a")
+      log_file.sync = true
+      $logger = TTY::Logger.new do |config|
+        config.metadata = [:time]
+        config.level = :debug
+        config.output = log_file
+      end
     end
   end
 
@@ -129,7 +155,7 @@ end
 
 class Object
   def debug_message(msg)
-    $DEBUG_CONSOLE.puts msg if $DEBUG_CONSOLE
+    $logger.debug msg if $logger
   end
 end
 
