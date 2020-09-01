@@ -84,7 +84,7 @@ module SetBuilderAdapter
     end
 
     def command(search)
-      "ag -C1 --line-numbers --column --nogroup --literal #{search}"
+      "ag -C#{$CONTEXT_LINES} --line-numbers --column --nogroup --literal #{search}"
     end
 
     def parse_results(results)

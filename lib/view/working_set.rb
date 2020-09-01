@@ -244,22 +244,23 @@ class View::WorkingSet
     line_number - scroll_top + 2
   end
 
-  def scrolled_into_view?(line_number)
-    result = line_number >= scroll_top && line_number < scroll_bottom
+  def scrolled_into_view?(line_number, context_lines: 0)
+    result = (line_number - context_lines) >= scroll_top && (line_number + context_lines) < scroll_bottom
+    debug_message "scrolled_into_view line_number: #{line_number} context_lines: #{context_lines} result: #{result.inspect}"
     result
   end
 
   def selected_item_in_view?
-    scrolled_into_view? @selected_item_line_number
+    scrolled_into_view? @selected_item_line_number, context_lines: $CONTEXT_LINES
   end
 
   def selected_item_scroll_delta
-    scroll_padding = 2
-    debug_message "#{@selected_item_line_number} | #{scroll_top} | #{scroll_bottom}"
-    if scroll_top > @selected_item_line_number
+    scroll_padding = 2 + $CONTEXT_LINES
+    debug_message "scrolling #{@selected_item_line_number} | #{scroll_top} | #{scroll_bottom}"
+    if scroll_top > (@selected_item_line_number - $CONTEXT_LINES)
       # scroll up
       ((scroll_top - @selected_item_line_number) * -1) - scroll_padding
-    elsif scroll_bottom < @selected_item_line_number
+    elsif scroll_bottom < (@selected_item_line_number + $CONTEXT_LINES)
       # scroll down
       @selected_item_line_number - scroll_bottom + scroll_padding
     else

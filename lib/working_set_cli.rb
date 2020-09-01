@@ -69,6 +69,14 @@ class WorkingSetCli
     default ".working_set_socket"
   end
 
+  option :context do
+    desc "How many lines around matches to show"
+    short "-c'"
+    long "--context=number"
+    convert :int
+    default 1
+  end
+
   option :debug do
     hidden
     desc "Set path for debug logging."
@@ -113,6 +121,7 @@ class WorkingSetCli
     init_debug
     init_socket_file
     init_live_watch
+    $CONTEXT_LINES = params[:context]
   end
 
   def init_live_watch

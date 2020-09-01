@@ -10,6 +10,7 @@ class SetViewerActor
     subscribe "set_build_finished", :refresh_view
     subscribe "set_build_failed", :show_error
     subscribe "scroll_changed", :scroll
+    subscribe "context_lines_changed", :update_context_lines
     subscribe "refresh", :refresh
     subscribe "show_match_lines_toggled", :toggle_match_lines
     subscribe "select_next_file", :select_next_file
@@ -33,7 +34,14 @@ class SetViewerActor
     @working_set_view.scroll(delta)
   end
 
-  def refresh(_)
+  def update_context_lines(_, delta)
+    $CONTEXT_LINES += delta
+    $CONTEXT_LINES = 0 if $CONTEXT_LINES < 0
+    debug_message "context lines set to #{$CONTEXT_LINES}"
+    refresh
+  end
+
+  def refresh(_=nil)
     return unless @working_set_view
     # triggers search again without changing search term
     publish "search_changed", @working_set_view.working_set.search

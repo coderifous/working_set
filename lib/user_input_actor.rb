@@ -17,6 +17,10 @@ class UserInputActor
         publish "scroll_changed", DEFAULT_SCROLL_STEP
       when Ncurses::KEY_UP
         publish "scroll_changed", DEFAULT_SCROLL_STEP * -1
+      when ?[.ord
+        publish "context_lines_changed", -1
+      when ?].ord
+        publish "context_lines_changed", 1
       when ?r.ord
         publish "refresh"
       when ?z.ord
