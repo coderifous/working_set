@@ -29,5 +29,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "ncurses-ruby", "~> 1.2"
   spec.add_dependency "listen", "~> 3.2"
   spec.add_dependency "clipboard", "~> 1.3"
+  spec.add_dependency "tty-option", "~> 0.1"
 
 end
