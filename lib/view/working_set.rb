@@ -23,7 +23,7 @@
 #
 # * Highlight "selected item" with colors.
 
-class View::WorkingSet
+class View::WorkingSet < View::Base
   attr_accessor :working_set, :selected_item_index, :file_index, :scroll_top, :scrollable_height, :show_match_lines
 
   def self.render(working_set)
@@ -36,7 +36,7 @@ class View::WorkingSet
     self.selected_item_index = 0
     self.scroll_top = 0
     self.show_match_lines = true
-    Ncurses.stdscr.clear
+    clear_screen
   end
 
   def index_files(working_set)
@@ -94,13 +94,13 @@ class View::WorkingSet
   def render
     render_title
     render_items
-    Ncurses.stdscr.refresh
+    refresh_screen
   end
 
   def toggle_match_lines
     self.show_match_lines = !show_match_lines
     self.scroll_top = 0
-    Ncurses.stdscr.clear
+    clear_screen
     render
   end
 
@@ -268,30 +268,12 @@ class View::WorkingSet
     end
   end
 
-  def color(name)
-    Ncurses.attron Ncurses.COLOR_PAIR(Colors[name][:number])
-    yield if block_given?
-    Ncurses.attroff Ncurses.COLOR_PAIR(Colors[name][:number])
-  end
-
   def print_field(align, width, content)
     printf "%#{align == :left ? "-" : ""}#{width}s", content
   end
 
   def calc_cols(percentage)
     (Ncurses.COLS * percentage).to_i
-  end
-
-  def move(y, x)
-    Ncurses.stdscr.move y, x
-  end
-
-  def printf(fmt, string)
-    Ncurses.stdscr.printw fmt, string
-  end
-
-  def print(string)
-    printf "%s", string
   end
 
 end

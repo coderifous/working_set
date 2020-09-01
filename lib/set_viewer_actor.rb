@@ -17,7 +17,13 @@ class SetViewerActor
     subscribe "select_prev_file", :select_prev_file
     subscribe "select_next_item", :select_next_item
     subscribe "select_prev_item", :select_prev_item
+    subscribe "welcome_user", :welcome_user
     initialize_ncurses
+    welcome_user
+  end
+
+  def welcome_user
+    View::WelcomeUser.render
   end
 
   def refresh_view(_, working_set)
@@ -118,6 +124,7 @@ class SetViewerActor
     Ncurses.nonl   # turn off newline translation
     Ncurses.stdscr.intrflush(false) # turn off flush-on-interrupt
     Ncurses.stdscr.keypad(true)     # turn on keypad mode
+    Ncurses.curs_set(0) # hidden cursor
 
     Ncurses.start_color
     Ncurses.use_default_colors
