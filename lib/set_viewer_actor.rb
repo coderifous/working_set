@@ -21,7 +21,7 @@ class SetViewerActor
 
   def refresh_view(_, working_set)
     prev_wsv = @working_set_view
-    @working_set_view = WorkingSetView.new(working_set)
+    @working_set_view = View::WorkingSet.new(working_set)
     if prev_wsv&.working_set&.search == working_set.search
       @working_set_view.restore_selection_state(prev_wsv)
     end
@@ -114,7 +114,7 @@ class SetViewerActor
     Ncurses.start_color
     Ncurses.use_default_colors
 
-    COLORS.each_pair do |k,v|
+    Colors.each_pair do |k,v|
       Ncurses.init_pair v[:number], v[:pair][0], v[:pair][1]
     end
   end

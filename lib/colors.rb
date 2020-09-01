@@ -1,5 +1,5 @@
 if defined?(Ncurses)
-  COLORS = {
+  Colors = {
     blue:  { pair: [Ncurses::COLOR_BLUE, -1] },
     cyan:  { pair: [Ncurses::COLOR_CYAN, -1] },
     red:   { pair: [Ncurses::COLOR_RED, -1] },
@@ -8,7 +8,7 @@ if defined?(Ncurses)
     yellow: { pair: [Ncurses::COLOR_YELLOW, -1] }
   }
 
-  COLORS.each_with_index do |(k,v),i|
+  Colors.each_with_index do |(k,v),i|
     v[:number] = i + 1
   end
 end

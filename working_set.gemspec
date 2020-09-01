@@ -4,6 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'working_set'
 
 Gem::Specification.new do |spec|
+
   spec.name          = "working_set"
   spec.version       = WorkingSet::VERSION
   spec.authors       = ["Jim Garvin"]
@@ -20,10 +21,13 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "bundler", "~> 2.1"
   spec.add_development_dependency "rake", "~> 13.0"
+
+  spec.add_dependency "zeitwerk", "~> 2.4"
   spec.add_dependency "celluloid", "~> 0.17"
   spec.add_dependency "celluloid-io", "~> 0.17"
   spec.add_dependency "celluloid-supervision", "~> 0.20.6"
   spec.add_dependency "ncurses-ruby", "~> 1.2"
   spec.add_dependency "listen", "~> 3.2"
   spec.add_dependency "clipboard", "~> 1.3"
+
 end

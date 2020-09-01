@@ -23,7 +23,7 @@
 #
 # * Highlight "selected item" with colors.
 
-class WorkingSetView
+class View::WorkingSet
   attr_accessor :working_set, :selected_item_index, :file_index, :scroll_top, :scrollable_height, :show_match_lines
 
   def self.render(working_set)
@@ -268,9 +268,9 @@ class WorkingSetView
   end
 
   def color(name)
-    Ncurses.attron Ncurses.COLOR_PAIR(COLORS[name][:number])
+    Ncurses.attron Ncurses.COLOR_PAIR(Colors[name][:number])
     yield if block_given?
-    Ncurses.attroff Ncurses.COLOR_PAIR(COLORS[name][:number])
+    Ncurses.attroff Ncurses.COLOR_PAIR(Colors[name][:number])
   end
 
   def print_field(align, width, content)
