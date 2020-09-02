@@ -3,7 +3,7 @@ require 'set'
 class WorkingSet
   attr_accessor :search, :items, :name, :note, :saved
 
-  VERSION = "0.1.0"
+  VERSION = "1.0.0"
 
   def initialize(search = nil, items = [])
     self.search = search

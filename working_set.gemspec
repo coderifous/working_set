@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.version       = WorkingSet::VERSION
   spec.authors       = ["Jim Garvin"]
   spec.email         = ["jim@thegarvin.com"]
-  spec.summary       = %q{Code search companion for your terminal-based text editor.}
-  spec.description   = %q{It's an ncurses-based thing.}
+  spec.summary       = %q{Companion for your terminal-based text editor.}
+  spec.description   = %q{Working Set is a multithreaded custom protocol server with an ncurses-based terminal interface that displays search results with context for better comprehension and easy navigation.}
   spec.homepage      = "https://github.com/coderifous/working_set"
   spec.license       = "MIT"
 
