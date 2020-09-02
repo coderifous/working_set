@@ -161,6 +161,7 @@ class UserInputActor
     if mapping
       instance_exec(&mapping[:action])
     end
+  rescue RangeError # ignore when .chr is out of range.  Just means it's not input we care about anyways.
   end
 
   def clean_up
