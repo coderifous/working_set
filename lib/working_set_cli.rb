@@ -165,6 +165,7 @@ class WorkingSetCli
   def check_for_existing_socket_file
     if File.exists?($SOCKET_PATH)
       puts "File #{$SOCKET_PATH.inspect} exists. Overwrite it? (y/N)"
+      require "io/console"
       if STDIN.getch =~ /y/i
         File.delete($SOCKET_PATH)
       else
