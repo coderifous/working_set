@@ -81,7 +81,7 @@ class UserInputActor
     case ch
     when ?q.ord
       throw :shutdown
-    when ?h.ord
+    when ??.ord
       publish "display_help"
     else
       debug_message "Unhandled user input: #{ch}"
@@ -89,7 +89,7 @@ class UserInputActor
   end
 
   USER_INPUT_MAPPINGS = {
-    "h" => {
+    "?" => {
       desc: "display help",
       action: -> { publish "display_help" }
     },

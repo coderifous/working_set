@@ -11,7 +11,7 @@ class View::WelcomeUser < View::Base
       [:cyan, "Working Set"],
       "v#{WorkingSet::VERSION}",
       "",
-      [:blue, "Press 'h' for help."],
+      [:blue, "Press '?' for help."],
       [:blue, "Press 'q' to quit."]
   end
 
