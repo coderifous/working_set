@@ -150,6 +150,10 @@ class UserInputActor
       desc: "copy selected match to system clipboard",
       action: -> { publish "copy_selected_item" }
     },
+    "Y" => {
+      desc: "copy selected match + context to system clipboard",
+      action: -> { publish "copy_selected_item", true }
+    },
   }
 
   def handle_working_set_input(ch)

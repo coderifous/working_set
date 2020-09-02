@@ -7,6 +7,7 @@ require 'bundler/setup' if ENV["WORKING_SET_DEV"] == "true"
 require 'celluloid/current'
 require 'celluloid/io'
 require 'ncurses'
+require 'clipboard'
 require 'tty-option'
 
 # And zeitwerk takes care of auto-loading the ruby files in this gem.

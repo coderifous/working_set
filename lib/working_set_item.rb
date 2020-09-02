@@ -33,4 +33,8 @@ class WorkingSetItem
       match_line == other.match_line
   end
 
+  def full_body
+    (pre_match_lines + [match_line] + post_match_lines).join("\n")
+  end
+
 end

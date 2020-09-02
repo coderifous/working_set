@@ -115,10 +115,14 @@ class SetViewerActor
     end
   end
 
-  def copy_selected_item(_)
+  def copy_selected_item(_, include_context=false)
     if @working_set_view
       item = @working_set_view.selected_item
-      Clipboard.copy item.match_line
+      if include_context
+        Clipboard.copy item.full_body
+      else
+        Clipboard.copy item.match_line
+      end
     end
   end
 
