@@ -93,6 +93,7 @@ class WorkingSetCli
       init
       $supervisor = AppSupervisor.run!
       sleep 0.5 while $supervisor.alive? # I've need to occupy the main thread otherwise the program exits here.
+      clean_up_ncurses
     end
   end
 
@@ -117,11 +118,37 @@ class WorkingSetCli
 
   private
 
+  def clean_up_ncurses
+    debug_message "cleaning up Ncurses"
+    Ncurses.echo
+    Ncurses.nocbreak
+    Ncurses.nl
+    Ncurses.endwin
+  end
+
   def init
     init_debug
     init_socket_file
     init_live_watch
+    init_ncurses
     $CONTEXT_LINES = params[:context]
+  end
+
+  def init_ncurses
+    Ncurses.initscr
+    Ncurses.cbreak # unbuffered input
+    Ncurses.noecho # turn off input echoing
+    Ncurses.nonl   # turn off newline translation
+    Ncurses.stdscr.intrflush(false) # turn off flush-on-interrupt
+    Ncurses.stdscr.keypad(true)     # turn on keypad mode
+    Ncurses.curs_set(0) # hidden cursor
+
+    Ncurses.start_color
+    Ncurses.use_default_colors
+
+    Colors.each_pair do |k,v|
+      Ncurses.init_pair v[:number], v[:pair][0], v[:pair][1]
+    end
   end
 
   def init_live_watch
@@ -157,6 +184,7 @@ class WorkingSetCli
         config.level = :debug
         config.output = log_file
       end
+      Celluloid.logger = $logger
     end
   end
 

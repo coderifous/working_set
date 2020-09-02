@@ -5,11 +5,13 @@ class View::WelcomeUser < View::Base
   end
 
   def render
+    UserInputActor.set_user_input_mode :welcome_user
+    clear_screen
     print_centered \
       [:cyan, "Working Set"],
       "v#{WorkingSet::VERSION}",
       "",
-      [:yellow, "Press 'h' for help."],
+      [:blue, "Press 'h' for help."],
       [:blue, "Press 'q' to quit."]
   end
 

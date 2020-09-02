@@ -36,7 +36,6 @@ class View::WorkingSet < View::Base
     self.selected_item_index = 0
     self.scroll_top = 0
     self.show_match_lines = true
-    clear_screen
   end
 
   def index_files(working_set)
@@ -92,6 +91,8 @@ class View::WorkingSet < View::Base
   end
 
   def render
+    UserInputActor.set_user_input_mode :working_set
+    clear_screen
     render_title
     render_items
     refresh_screen

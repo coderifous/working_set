@@ -1,8 +1,6 @@
 class SetViewerActor
   include BasicActor
 
-  finalizer :clean_up
-
   def initialize
     subscribe "tell_selected_item", :tell_selected_item
     subscribe "copy_selected_item", :copy_selected_item
@@ -18,12 +16,24 @@ class SetViewerActor
     subscribe "select_next_item", :select_next_item
     subscribe "select_prev_item", :select_prev_item
     subscribe "welcome_user", :welcome_user
-    initialize_ncurses
+    subscribe "display_help", :display_help
+    subscribe "display_working_set", :display_working_set
     welcome_user
   end
 
-  def welcome_user
+  def welcome_user(_=nil)
+    debug_message "displaying welcome_user!"
     View::WelcomeUser.render
+  end
+
+  def display_help(_)
+    debug_message "displaying help!"
+    View::Help.render
+  end
+
+  def display_working_set(_)
+    debug_message "displaying working_set!"
+    @working_set_view&.render
   end
 
   def refresh_view(_, working_set)
@@ -117,28 +127,4 @@ class SetViewerActor
     Ncurses.stdscr.refresh
   end
 
-  def initialize_ncurses
-    Ncurses.initscr
-    Ncurses.cbreak # unbuffered input
-    Ncurses.noecho # turn off input echoing
-    Ncurses.nonl   # turn off newline translation
-    Ncurses.stdscr.intrflush(false) # turn off flush-on-interrupt
-    Ncurses.stdscr.keypad(true)     # turn on keypad mode
-    Ncurses.curs_set(0) # hidden cursor
-
-    Ncurses.start_color
-    Ncurses.use_default_colors
-
-    Colors.each_pair do |k,v|
-      Ncurses.init_pair v[:number], v[:pair][0], v[:pair][1]
-    end
-  end
-
-  def clean_up
-    debug_message "cleaning up Ncurses"
-    Ncurses.echo
-    Ncurses.nocbreak
-    Ncurses.nl
-    Ncurses.endwin
-  end
 end
