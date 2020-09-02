@@ -87,7 +87,7 @@ class View::WorkingSet < View::Base
   end
 
   def sorted_items
-    @_sorted_items ||= working_set.items.sort_by { |i| "#{i.file_path}:#{i.row}"  }
+    @_sorted_items ||= working_set.items.sort_by { |i| [i.file_path, i.row.to_i]  }
   end
 
   def render
