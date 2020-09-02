@@ -9,6 +9,13 @@ Installing the gem adds the working_set command to your path.
 
     $ gem install working_set
 
+Install the plugin for your editor.
+
+* [Vim Plugin](https://github.com/coderifous/working-set.vim)
+
+Note: Currently there's only a plugin for Vim, however Working Set will be
+compatible with any editor that can be extended and communicate via socket.
+
 ## Usage
 
 Run the working_set command in your project's directory.
@@ -23,66 +30,78 @@ in the same directory.
     $ cd my-project
     $ vim
 
-Currently only a vim plugin for working_set exists.  Install that plugin.  Read
-it's docs.
-
 ## Options
 
-Modify the behavior of working_set with these flags:
+Run `working_set -h` to see a list of command line options:
 
-  --watch
+    --watch | -w
 
-    Tells working_set to monitor the filesystem for changes and refresh the
-    search results automatically when changes are detected.  The value should be
-    point at the directory you want to monitor.
+      Tells working_set to monitor the filesystem for changes and refresh the
+      search results automatically when changes are detected.  The value should be
+      point at the directory you want to monitor.
 
-    Example: --watch=src
+      Example: --watch=app
 
-    Default: none, search results will not automatically refresh.
+      Default: none, search results will not automatically refresh.
 
-  --socket | -S
+    --context | -c
 
-    Sets the path for the socket file to create.
+      Sets number of contextual lines to show around matches.
 
-    Example: --socket=/tmp/my-special-project
+      Example: --count=3
 
-    Default: .working_set_socket
+      Default: 1
+
+    --socket | -s
+
+      Sets the path for the socket file to create.
+
+      Example: --socket=/tmp/my-special-project
+
+      Default: .working_set_socket
+
+    --help | -h
+
+      Show help.
 
 ## Commands in working_set
 
-working_set command keys:
+You can press '?' in working_set to see key bindings:
 
-q      - quit working_set
-r      - refresh search results
-j      - move cursor to next match
-k      - move cursor to previous match
-ctrl+n - move cursor to next file
-ctrl+p - move cursor to prev file
-z      - fold search results to just show files
-y      - copy currently selected line
+    ?          - display help
+    q          - quit
+    j          - select next match
+    k          - select previous match
+    ctrl-n     - select first match in next file
+    ctrl-p     - select first match in previous file
+    enter      - Tell editor to jump to match
+    down arrow - scroll down without changing selection
+    up arrow   - scroll up without changing selection
+    r          - refresh search results
+    [          - decrease context lines
+    ]          - increase context lines
+    z          - toggle showing match lines vs just matched files
+    y          - copy selected match to system clipboard
+    Y          - copy selected match + context to system clipboard
 
-Todo:
+## Todo
 * Add support for searching straight from working_set using "/" key.
 * Add support for setting search argument prefix as working_set command argument.
   e.g. --prefix="--ignore=tmp,vendor"
-* Add help screen that shows commands.
 * Add support for bookmarks.
 * Add support for search history.
-* Add support for customizing command keys.
+* Add support for customizing key bindings.
 * Document protocol so other plugin editors can exist.
 * Document adapter so other search tools can be used.
 
 ## Development
 
-1) Edit the source code.
-   * uncomment bundler/setup in bin/working_set
-2) run bin/working_set
-3) test it out.
+1) Fork the repo, clone the source code.
+2) run `bundle install` to install dependencies.
+3) run `bin/working_set -d` to execute the program with debug logging enabled
+4) watch the debug messages: `tail -f working_set.log`
+5) make code changes, restart `working_set` to see their effect.
 
-There's also some wierd support for a debugging messages over sockets:
+Please do submit pull requests to add features, fix bugs, etc. Please discuss
+before spending lots of time on large changes.
 
-Terminal 1:
-  $ nc -l 8888
-
-Terminal 2:
-  $ bin/working_set --debug=8888

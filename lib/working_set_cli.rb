@@ -24,10 +24,11 @@ class WorkingSetCli
     no_command # Doesn't seem to work as expected...
     command nil # So I have to do this.
 
-    header "Working Set: A powerful companion for your brain while it's using your favorite text editor."
+    header "Working Set: A powerful companion for your favorite text editor."
 
-    desc "Very fast searching powered by `ag`, convenient ncurses-based interface, robust editor integration via bi-directional socket API."
-    desc "Pairs great with tmux and vim."
+    desc "Working Set facilitates very fast searching powered by `ag`, has a convenient ncurses-based interface, and robust editor integration via bi-directional socket API."
+    desc "It pairs great with tmux and vim."
+    desc "See the README for more:\nhttps://github.com/coderifous/working_set"
 
     example <<~EOS
     Run with defaults:
