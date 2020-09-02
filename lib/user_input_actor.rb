@@ -88,36 +88,74 @@ class UserInputActor
     end
   end
 
+  USER_INPUT_MAPPINGS = {
+    "h" => {
+      desc: "display help",
+      action: -> { publish "display_help" }
+    },
+    "q" => {
+      desc: "quit",
+      action: -> { throw :shutdown }
+    },
+    "j" => {
+      desc: "select next match",
+      action: -> { publish "select_next_item" }
+    },
+    "k" => {
+      desc: "select previous match",
+      action: -> { publish "select_prev_item" }
+    },
+    14 => {
+      key_desc: "ctrl-n",
+      desc: "select first match in next file",
+      action: -> { publish "select_next_file" }
+    },
+    16 => {
+      key_desc: "ctrl-p",
+      desc: "select first match in previous file",
+      action: -> { publish "select_prev_file" }
+    },
+    13 => {
+      key_desc: "enter",
+      desc: "Tell editor to jump to match",
+      action: -> { publish "tell_selected_item" }
+    },
+    Ncurses::KEY_DOWN => {
+      key_desc: "down arrow",
+      desc: "scroll down without changing selection",
+      action: -> { publish "scroll_changed", DEFAULT_SCROLL_STEP }
+    },
+    Ncurses::KEY_UP => {
+      key_desc: "up arrow",
+      desc: "scroll up without changing selection",
+      action: -> { publish "scroll_changed", DEFAULT_SCROLL_STEP * -1 }
+    },
+    "r" => {
+      desc: "refresh search results",
+      action: -> { publish "refresh" }
+    },
+    "[" => {
+      desc: "decrease context lines",
+      action: -> { publish "context_lines_changed", -1 }
+    },
+    "]" => {
+      desc: "increase context lines",
+      action: -> { publish "context_lines_changed", 1 }
+    },
+    "z" => {
+      desc: "toggle showing match lines vs just matched files",
+      action: -> { publish "show_match_lines_toggled" }
+    },
+    "y" => {
+      desc: "copy selected match to system clipboard",
+      action: -> { publish "copy_selected_item" }
+    },
+  }
+
   def handle_working_set_input(ch)
-    case ch
-    when Ncurses::KEY_DOWN
-      publish "scroll_changed", DEFAULT_SCROLL_STEP
-    when Ncurses::KEY_UP
-      publish "scroll_changed", DEFAULT_SCROLL_STEP * -1
-    when ?[.ord
-      publish "context_lines_changed", -1
-    when ?].ord
-      publish "context_lines_changed", 1
-    when ?r.ord
-      publish "refresh"
-    when ?z.ord
-      publish "show_match_lines_toggled"
-    when ?y.ord
-      publish "copy_selected_item"
-    when ?h.ord
-      publish "display_help"
-    when ?q.ord
-      throw :shutdown
-    when ?j.ord
-      publish "select_next_item"
-    when ?k.ord
-      publish "select_prev_item"
-    when 14 # ctrl-n
-      publish "select_next_file"
-    when 16 # ctrl-p
-      publish "select_prev_file"
-    when 13
-      publish "tell_selected_item"
+    mapping = USER_INPUT_MAPPINGS[ch] || USER_INPUT_MAPPINGS[ch.chr]
+    if mapping
+      instance_exec(&mapping[:action])
     end
   end
 

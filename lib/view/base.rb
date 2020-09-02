@@ -26,6 +26,10 @@ class View::Base
     printf "%s", string
   end
 
+  def puts(string="")
+    print string + "\n"
+  end
+
   def print_centered(*lines)
     start_y = Ncurses.LINES / 2 - lines.size / 2
     lines.each_with_index do |line, i|
