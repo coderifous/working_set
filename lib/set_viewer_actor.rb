@@ -45,8 +45,12 @@ class SetViewerActor
     @working_set_view.render
   end
 
+  def items_present?
+    @working_set_view&.working_set&.items&.size > 0
+  end
+
   def scroll(_, delta)
-    return unless @working_set_view
+    return unless items_present?
     @working_set_view.scroll(delta)
   end
 
@@ -64,17 +68,17 @@ class SetViewerActor
   end
 
   def toggle_match_lines(_)
-    return unless @working_set_view
+    return unless items_present?
     @working_set_view.toggle_match_lines
   end
 
   def select_next_file(_)
-    return unless @working_set_view
+    return unless items_present?
     @working_set_view.select_next_file
   end
 
   def select_prev_file(_)
-    return unless @working_set_view
+    return unless items_present?
     @working_set_view.select_prev_file
     unless @working_set_view.selected_item_in_view?
       publish "scroll_changed", @working_set_view.selected_item_scroll_delta
@@ -82,7 +86,7 @@ class SetViewerActor
   end
 
   def select_next_item(_)
-    return unless @working_set_view
+    return unless items_present?
     @working_set_view.select_next_item
     unless @working_set_view.selected_item_in_view?
       publish "scroll_changed", @working_set_view.selected_item_scroll_delta
@@ -90,7 +94,7 @@ class SetViewerActor
   end
 
   def select_prev_item(_)
-    return unless @working_set_view
+    return unless items_present?
     @working_set_view.select_prev_item
     unless @working_set_view.selected_item_in_view?
       publish "scroll_changed", @working_set_view.selected_item_scroll_delta
@@ -98,7 +102,7 @@ class SetViewerActor
   end
 
   def tell_selected_item(_)
-    if @working_set_view
+    if items_present?
       item = @working_set_view.selected_item
       publish "respond_client", [item.file_path, item.row, item.column]
     else
@@ -107,7 +111,7 @@ class SetViewerActor
   end
 
   def tell_selected_item_content(_)
-    if @working_set_view
+    if items_present?
       item = @working_set_view.selected_item
       publish "respond_client", [item.match_line]
     else
@@ -116,7 +120,7 @@ class SetViewerActor
   end
 
   def copy_selected_item(_, include_context=false)
-    if @working_set_view
+    if items_present?
       item = @working_set_view.selected_item
       if include_context
         Clipboard.copy item.full_body
