@@ -26,6 +26,9 @@
 class View::WorkingSet < View::Base
   attr_accessor :working_set, :selected_item_index, :file_index, :scroll_top, :scrollable_height, :show_match_lines
 
+  TITLE_ROWS  = 2
+  FOOTER_ROWS = 2
+
   def self.render(working_set)
     new(working_set).render
   end
@@ -95,7 +98,7 @@ class View::WorkingSet < View::Base
     clear_screen
     render_title
     render_items
-    refresh_screen
+    render_footer
   end
 
   def toggle_match_lines
@@ -147,7 +150,7 @@ class View::WorkingSet < View::Base
   end
 
   def scrollable_height
-    Ncurses.LINES - 2
+    Ncurses.LINES - TITLE_ROWS - FOOTER_ROWS
   end
 
   def scroll_bottom
@@ -166,6 +169,13 @@ class View::WorkingSet < View::Base
       color :red do
         print " +"
       end
+    end
+  end
+
+  def render_footer
+    move Ncurses.LINES - 1, 0
+    color :blue do
+      print_field :right, calc_cols(1), "#{selected_item_index + 1} of #{sorted_items.size} (#{file_index.keys.size} files)"
     end
   end
 
@@ -209,7 +219,7 @@ class View::WorkingSet < View::Base
         end
 
         # Print match line.
-        print_scrollable_item 0, :blue, "#{item == selected_item ? ">" : " "}" #{item.row}"
+        print_scrollable_item 0, :blue, "#{item == selected_item ? ">" : " "}"
         print_scrollable_item 2, :yellow, item.row
         puts_scrollable_item 5, :yellow, item.match_line
 
@@ -242,7 +252,7 @@ class View::WorkingSet < View::Base
   end
 
   def scrollable_item_line_number_to_screen_row(line_number)
-    line_number - scroll_top + 2
+    line_number - scroll_top + TITLE_ROWS
   end
 
   def scrolled_into_view?(line_number, context_lines: 0)

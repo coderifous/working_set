@@ -7,7 +7,6 @@ class View::Help < View::Base
   def render
     UserInputActor.set_user_input_mode :help
     clear_screen
-    refresh_screen
     move 0, 0
     puts "Key Bindings"
     puts "------------"

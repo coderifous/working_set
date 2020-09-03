@@ -22,12 +22,16 @@ class View::Base
     Ncurses.stdscr.printw fmt, string
   end
 
-  def print(string)
-    printf "%s", string
+  def printw(string)
+    Ncurses.stdscr.printw(string)
   end
 
   def puts(string="")
     print string + "\n"
+  end
+
+  def print(string)
+    printw(sprintf "%s", string)
   end
 
   def print_centered(*lines)
