@@ -95,7 +95,6 @@ class WorkingSetCli
       init
       $supervisor = AppSupervisor.run!
       sleep 0.5 while $supervisor.alive? # I've need to occupy the main thread otherwise the program exits here.
-      clean_up_ncurses
     end
   end
 
@@ -104,6 +103,8 @@ class WorkingSetCli
     supervise type: SetBuilderActor, as: :set_builder
     supervise type: ApiInputActor,   as: :api_input
     supervise type: UserInputActor,  as: :user_input
+
+    finalizer :clean_up_ncurses
 
     def self.enable_live_watch!
       supervise type: LiveUpdaterActor, as: :live_updater
@@ -116,17 +117,18 @@ class WorkingSetCli
       shutdown
       terminate
     end
+
+    def clean_up_ncurses
+      debug_message "cleaning up Ncurses"
+      Ncurses.echo
+      Ncurses.nocbreak
+      Ncurses.nl
+      Ncurses.endwin
+    end
+
   end
 
   private
-
-  def clean_up_ncurses
-    debug_message "cleaning up Ncurses"
-    Ncurses.echo
-    Ncurses.nocbreak
-    Ncurses.nl
-    Ncurses.endwin
-  end
 
   def init
     init_debug
