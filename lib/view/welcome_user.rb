@@ -9,10 +9,13 @@ class View::WelcomeUser < View::Base
     clear_screen
     print_centered \
       [:cyan, "Working Set"],
+      "",
       "v#{WorkingSet::VERSION}",
+      "by Jim Garvin et al.",
       "",
       [:blue, "Press '?' for help."],
       [:blue, "Press 'q' to quit."]
+    refresh_screen
   end
 
 end

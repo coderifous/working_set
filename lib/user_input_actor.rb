@@ -40,8 +40,13 @@ class UserInputActor
   end
 
   def watch_input
+
+    # Creating this otherwise unused window so that I can run getch() without
+    # the implicit call to stdscr.refresh that it apparently precipitates.
+    trash_win = Ncurses.newwin(1, 1, 0, 0)
+
     catch(:shutdown) do
-      while(ch = Ncurses.stdscr.getch)
+      while(ch = trash_win.getch)
         debug_message "getch: #{ch}"
         handle_modal_input(ch)
       end

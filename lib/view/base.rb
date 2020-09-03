@@ -8,14 +8,14 @@ class View::Base
     Ncurses.stdscr.clear
   end
 
-  def color(name)
-    Ncurses.attron Ncurses.COLOR_PAIR(Colors[name][:number])
+  def color(name, window=Ncurses.stdscr)
+    window.attron Ncurses.COLOR_PAIR(Colors[name][:number])
     yield if block_given?
-    Ncurses.attroff Ncurses.COLOR_PAIR(Colors[name][:number])
+    window.attroff Ncurses.COLOR_PAIR(Colors[name][:number])
   end
 
-  def move(y, x)
-    Ncurses.stdscr.move y, x
+  def move(y, x, window = Ncurses.stdscr)
+    window.move y, x
   end
 
   def printf(fmt, string)

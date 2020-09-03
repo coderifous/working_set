@@ -68,7 +68,7 @@ class View::WorkingSet < View::Base
     if idx = sorted_items.find_index(from_working_set_view.selected_item)
       self.selected_item_index = idx
       self.show_match_lines    = from_working_set_view.show_match_lines
-      render # have to render to set @scrollable_line_count or the next call won't work
+      render_items_and_footer # have to render to set @scrollable_line_count or the next call won't work
       set_scroll_top(from_working_set_view.scroll_top)
     end
   end
@@ -96,44 +96,50 @@ class View::WorkingSet < View::Base
   def render
     UserInputActor.set_user_input_mode :working_set
     clear_screen
-    render_title
-    render_items
-    render_footer
+    refresh_screen
+    render_title.refresh
+    render_items.refresh
+    render_footer.refresh
   end
 
   def toggle_match_lines
     self.show_match_lines = !show_match_lines
     self.scroll_top = 0
-    clear_screen
-    render
+    @item_win.clear
+    render_items.refresh
+  end
+
+  def render_items_and_footer
+    render_items.refresh
+    render_footer.refresh
   end
 
   def select_next_file
     next_file = file_index[selected_item.file_path][:next_file]
     self.selected_item_index = next_file[:item_index] if next_file
-    render
+    render_items_and_footer
   end
 
   def select_prev_file
     prev_file = file_index[selected_item.file_path][:prev_file]
     self.selected_item_index = prev_file[:item_index] if prev_file
-    render
+    render_items_and_footer
   end
 
   def select_next_item
     self.selected_item_index += 1 unless selected_item_index >= sorted_items.size - 1
-    render
+    render_items_and_footer
   end
 
   def select_prev_item
     self.selected_item_index -= 1 unless selected_item_index <= 0
-    render
+    render_items_and_footer
   end
 
   def scroll(delta)
     return if @scrollable_line_count <= scrollable_height
     set_scroll_top(scroll_top + delta)
-    render
+    render_items_and_footer
   end
 
   def set_scroll_top(value)
@@ -158,28 +164,37 @@ class View::WorkingSet < View::Base
   end
 
   def render_title
-    move 0, 0
-    print_field :left, calc_cols(1), " "
-    move 0, 0
-    color :blue do
-      print title
+    # Height, Width, Y, X   note: (0 width == full width)
+    @title_win ||= Ncurses.newwin(1, 0, 0, 0)
+    move 0, 0, @title_win
+    print_field @title_win, :left, calc_cols(1), " "
+    move 0, 0, @title_win
+    color :blue, @title_win do
+      @title_win.printw title
     end
-
     if needs_save?
-      color :red do
-        print " +"
+      color :red, @title_win do
+        @title_win.printw " +"
       end
     end
+    @title_win
   end
 
   def render_footer
-    move Ncurses.LINES - 1, 0
-    color :blue do
-      print_field :right, calc_cols(1), "#{selected_item_index + 1} of #{sorted_items.size} (#{file_index.keys.size} files)"
+    # Height, Width, Y, X   note: (0 width == full width)
+    @footer_win ||= Ncurses.newwin(1, 0, Ncurses.LINES - 1, 0)
+    move 0, 0, @footer_win
+    color :blue, @footer_win do
+      print_field @footer_win, :right, calc_cols(1), "#{selected_item_index + 1} of #{sorted_items.size} (#{file_index.keys.size} files)"
     end
+    @footer_win
   end
 
   def render_items
+
+    # Height, Width, Y, X   note: (0 width == full width)
+    @item_win ||= Ncurses.newwin(scrollable_height, 0, TITLE_ROWS, 0)
+
     previous_file_path      = nil
     previous_row            = 0
     @scrollable_line_number = 0
@@ -235,6 +250,8 @@ class View::WorkingSet < View::Base
     end
 
     @scrollable_line_count = @scrollable_line_number
+
+    @item_win
   end
 
   def puts_scrollable_item(start_col, color_name, content)
@@ -244,15 +261,16 @@ class View::WorkingSet < View::Base
 
   def print_scrollable_item(start_col, color_name, content, *color_content_pairs)
     if scrolled_into_view?(@scrollable_line_number)
-      move scrollable_item_line_number_to_screen_row(@scrollable_line_number), start_col
-      color color_name do
-        printf "%-#{Ncurses.COLS - start_col}s", content
+      y = scrollable_item_line_number_to_screen_row(@scrollable_line_number)
+      x = start_col
+      color color_name, @item_win do
+        @item_win.mvprintw y, x, "%-#{Ncurses.COLS - start_col}s", content
       end
     end
   end
 
   def scrollable_item_line_number_to_screen_row(line_number)
-    line_number - scroll_top + TITLE_ROWS
+    line_number - scroll_top
   end
 
   def scrolled_into_view?(line_number, context_lines: 0)
@@ -279,8 +297,8 @@ class View::WorkingSet < View::Base
     end
   end
 
-  def print_field(align, width, content)
-    printf "%#{align == :left ? "-" : ""}#{width}s", content
+  def print_field(window, align, width, content)
+    window.printw "%#{align == :left ? "-" : ""}#{width}s", content
   end
 
   def calc_cols(percentage)

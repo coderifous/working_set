@@ -11,6 +11,7 @@ class View::Help < View::Base
     puts "Key Bindings"
     puts "------------"
     puts
+
     UserInputActor::USER_INPUT_MAPPINGS.each_pair do |k,v|
       color(:cyan) do
         print " #{v[:key_desc] || k}"
@@ -21,6 +22,8 @@ class View::Help < View::Base
     color(:blue) do
       print "Press 'q' to go back."
     end
+
+    refresh_screen
   end
 
 end
