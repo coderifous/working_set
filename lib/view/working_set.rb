@@ -95,8 +95,8 @@ class View::WorkingSet < View::Base
 
   def render
     UserInputActor.set_user_input_mode :working_set
-    clear_screen
-    refresh_screen
+    stdscr.clear
+    stdscr.refresh
     render_title.refresh
     render_items.refresh
     render_footer.refresh
@@ -166,14 +166,14 @@ class View::WorkingSet < View::Base
   def render_title
     # Height, Width, Y, X   note: (0 width == full width)
     @title_win ||= Ncurses.newwin(1, 0, 0, 0)
-    move 0, 0, @title_win
+    @title_win.move 0, 0
     print_field @title_win, :left, calc_cols(1), " "
-    move 0, 0, @title_win
-    color :blue, @title_win do
+    @title_win.move 0, 0
+    with_color @title_win, :blue do
       @title_win.printw title
     end
     if needs_save?
-      color :red, @title_win do
+      with_color @title_win, :red do
         @title_win.printw " +"
       end
     end
@@ -183,8 +183,8 @@ class View::WorkingSet < View::Base
   def render_footer
     # Height, Width, Y, X   note: (0 width == full width)
     @footer_win ||= Ncurses.newwin(1, 0, Ncurses.LINES - 1, 0)
-    move 0, 0, @footer_win
-    color :blue, @footer_win do
+    @footer_win.move 0, 0
+    with_color @footer_win, :blue do
       print_field @footer_win, :right, calc_cols(1), "#{selected_item_index + 1} of #{sorted_items.size} (#{file_index.keys.size} files)"
     end
     @footer_win
@@ -263,7 +263,7 @@ class View::WorkingSet < View::Base
     if scrolled_into_view?(@scrollable_line_number)
       y = scrollable_item_line_number_to_screen_row(@scrollable_line_number)
       x = start_col
-      color color_name, @item_win do
+      with_color @item_win, color_name do
         @item_win.mvprintw y, x, "%-#{Ncurses.COLS - start_col}s", content
       end
     end

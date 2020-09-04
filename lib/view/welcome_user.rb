@@ -6,7 +6,7 @@ class View::WelcomeUser < View::Base
 
   def render
     UserInputActor.set_user_input_mode :welcome_user
-    clear_screen
+    stdscr.clear
     print_centered \
       [:cyan, "Working Set"],
       "",
@@ -15,7 +15,25 @@ class View::WelcomeUser < View::Base
       "",
       [:blue, "Press '?' for help."],
       [:blue, "Press 'q' to quit."]
-    refresh_screen
+    stdscr.refresh
+  end
+
+  private
+
+  def print_centered(*lines)
+    start_y = Ncurses.LINES / 2 - lines.size / 2
+    lines.each_with_index do |line, i|
+      color, msg = if Array === line
+                     line
+                   else
+                     [:white, line]
+                   end
+      x = Ncurses.COLS / 2 - msg.size / 2
+      stdscr.move start_y + i, x
+      with_color(stdscr, color) do
+        stdscr.printw msg
+      end
+    end
   end
 
 end

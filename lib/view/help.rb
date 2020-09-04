@@ -6,24 +6,22 @@ class View::Help < View::Base
 
   def render
     UserInputActor.set_user_input_mode :help
-    clear_screen
-    move 0, 0
-    puts "Key Bindings"
-    puts "------------"
-    puts
+    stdscr.clear
+    stdscr.move 0, 0
+    stdscr.printw "Key Bindings\n"
+    stdscr.printw "------------\n\n"
 
     UserInputActor::USER_INPUT_MAPPINGS.each_pair do |k,v|
-      color(:cyan) do
-        print " #{v[:key_desc] || k}"
+      with_color(stdscr, :cyan) do
+        stdscr.printw " #{v[:key_desc] || k}"
       end
-      puts " - #{v[:desc]}"
-      puts
+      stdscr.printw " - #{v[:desc]}\n\n"
     end
-    color(:blue) do
-      print "Press 'q' to go back."
+    with_color(stdscr, :blue) do
+      stdscr.printw "Press 'q' to go back."
     end
 
-    refresh_screen
+    stdscr.refresh
   end
 
 end
