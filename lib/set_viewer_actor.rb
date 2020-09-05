@@ -46,7 +46,7 @@ class SetViewerActor
   end
 
   def items_present?
-    @working_set_view&.working_set&.items&.size > 0
+    (@working_set_view&.working_set&.items&.size || 0) > 0
   end
 
   def scroll(_, delta)
