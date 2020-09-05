@@ -18,6 +18,7 @@ class ApiInputActor
     select_prev_file
     tell_selected_item
     tell_selected_item_content
+    show_match_lines_toggled
     refresh
   )
 
