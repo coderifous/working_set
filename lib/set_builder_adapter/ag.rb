@@ -100,7 +100,7 @@ module SetBuilderAdapter
     end
 
     def command_parts(search_term, options)
-      [ command_bin, *command_options(options), search_term ]
+      [ command_bin, *command_options(options), "--", search_term ]
     end
 
     def parse_results(results)
