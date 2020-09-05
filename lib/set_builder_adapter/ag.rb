@@ -90,7 +90,7 @@ module SetBuilderAdapter
     end
 
     def command_options(options)
-      %w(--search-files -C1 --numbers --column --nogroup --literal) + map_external_options(options)
+      %W(--search-files -C#{$CONTEXT_LINES} --numbers --column --nogroup --literal) + map_external_options(options)
     end
 
     def map_external_options(options)
