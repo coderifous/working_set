@@ -1,4 +1,5 @@
 require 'socket'
+require 'json'
 
 class ApiInputActor
   include BasicActor
