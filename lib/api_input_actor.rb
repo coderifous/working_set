@@ -6,6 +6,20 @@ class ApiInputActor
 
   finalizer :close_server
 
+  # Since the inputs are translated into internal actor messages, we can have a
+  # little extra security by only permitting certain messages, because some
+  # messages are really for internal use only.
+  PERMITTED_MESSAGES_LIST = %w(
+    search_changed
+    select_next_item
+    select_prev_item
+    select_next_file
+    select_prev_file
+    tell_selected_item
+    tell_selected_item_content
+    refresh
+  )
+
   def initialize
     subscribe "respond_client", :respond_client
     @server = UNIXServer.new $SOCKET_PATH
@@ -23,13 +37,21 @@ class ApiInputActor
   end
 
   def process_input(input)
-    message, arg = input.split(/(?<!\\)\|/, 2)
-    debug_message "message recieved: #{message.inspect} with arg: #{arg.inspect}"
-    if arg
-      publish message, arg
-    else
-      publish message
+    debug_message "input: #{input.inspect}"
+
+    parsed = JSON.parse(input)
+    message = parsed["message"]
+    args    = parsed["args"]
+    options = parsed["options"]
+
+    debug_message "message: #{message.inspect}\nargs: #{args.inspect}\noptions: #{options.inspect}"
+
+    unless PERMITTED_MESSAGES_LIST.include?(message)
+      debug_message "Message not permitted, ignoring."
+      return
     end
+
+    publish *[message, args, options].compact
   end
 
   def close_server
@@ -38,9 +60,10 @@ class ApiInputActor
     File.delete($SOCKET_PATH)
   end
 
-  def respond_client(_, arg_array)
-    debug_message "Responding #{arg_array.inspect}"
-    @client.puts arg_array.join("|") if @client
+  def respond_client(_, message, extras={})
+    payload = { message: message }.merge(extras)
+    debug_message "Responding #{payload.inspect}"
+    @client.puts payload.to_json if @client
   end
 
   def send_message(msg, arg)

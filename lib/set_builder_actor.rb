@@ -10,10 +10,10 @@ class SetBuilderActor
     self.adapter = initial_adapter
   end
 
-  def build_working_set(_, search)
-    debug_message "search command: #{adapter.command(search)}"
+  def build_working_set(_, search, options={})
+    debug_message "search: #{search.inspect} options: #{options.inspect}"
     begin
-      working_set = adapter.build_working_set(search)
+      working_set = adapter.build_working_set(search, options)
       publish "set_build_finished", working_set
     rescue StandardError => e
       publish "set_build_failed", e

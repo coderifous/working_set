@@ -77,33 +77,55 @@ module SetBuilderAdapter
 
         # Otherwise big fat fail.
         else
+          debug_message "Parse failed for:"
+          debug_message line.inspect
           raise ParserError.new("parse_line failed for: #{line.inspect}")
         end
       end
 
     end
 
-    def command(search)
-      "ag -C#{$CONTEXT_LINES} --line-numbers --column --nogroup --literal #{search}"
+    def command_bin
+      "ag"
+    end
+
+    def command_options(options)
+      %w(--search-files -C1 --numbers --column --nogroup --literal) + map_external_options(options)
+    end
+
+    def map_external_options(options)
+      [].tap do |ary|
+        ary << "--word-regexp" if options["whole_word"]
+      end
+    end
+
+    def command_parts(search_term, options)
+      [ command_bin, *command_options(options), search_term ]
     end
 
     def parse_results(results)
+      debug_message "Ag Results:\n#{results}"
       Parser.new(results).parse
     rescue ParserError => e
       STDERR.puts e
       raise e
     end
 
-    def build_working_set(search)
-      # stdout, stderr, status = Open3.capture3(command(search))
-      # if status == 0
-      stdout = `#{command(search)}`
-      if $?.exitstatus == 0 || $?.exitstatus == 1
+    def build_working_set(search, options)
+      debug_message "search command: #{command_parts(search, options)}"
+
+      stdout, stderr, status = Open3.capture3(*command_parts(search, options))
+
+      # Ag exits 0 when results found
+      # Ag exits 1 when zero results found
+      # ... It also exits 1 when there's a problem with options.
+      if status.exitstatus == 0 || status.exitstatus == 1
         WorkingSet.new search, parse_results(stdout)
       else
-        # raise "ag command failed: #{stdout} #{stderr}"
-        raise "ag command failed with status #{$?.exitstatus.inspect}: #{stdout}"
+        raise "ag command failed: #{stdout} #{stderr}"
+        # raise "ag command failed with status #{$?.exitstatus.inspect}: #{stdout}"
       end
+
     end
 
   end

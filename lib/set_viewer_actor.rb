@@ -104,18 +104,20 @@ class SetViewerActor
   def tell_selected_item(_)
     if items_present?
       item = @working_set_view.selected_item
-      publish "respond_client", [item.file_path, item.row, item.column]
-    else
-      publish "respond_client", []
+      publish "respond_client", "selected_item", {
+        file_path: item.file_path,
+        row: item.row,
+        column: item.column
+      }
     end
   end
 
   def tell_selected_item_content(_)
     if items_present?
       item = @working_set_view.selected_item
-      publish "respond_client", [item.match_line]
-    else
-      publish "respond_client", []
+      publish "respond_client", "selected_item_content", {
+        data: item.match_line
+      }
     end
   end
 
