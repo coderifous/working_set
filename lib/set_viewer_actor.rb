@@ -75,6 +75,9 @@ class SetViewerActor
   def select_next_file(_)
     return unless items_present?
     @working_set_view.select_next_file
+    unless @working_set_view.selected_item_in_view?
+      publish "scroll_changed", @working_set_view.selected_item_scroll_delta
+    end
   end
 
   def select_prev_file(_)
