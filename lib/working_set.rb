@@ -1,13 +1,14 @@
 require 'set'
 
 class WorkingSet
-  attr_accessor :search, :items, :name, :note, :saved
+  attr_accessor :search, :options, :items, :name, :note, :saved
 
   VERSION = "1.0.0"
 
-  def initialize(search = nil, items = [])
-    self.search = search
-    self.items = []
+  def initialize(search = nil, options = nil, items = [])
+    self.search  = search
+    self.options = options
+    self.items   = []
     items.each { |i| self.add i }
   end
 
@@ -23,6 +24,7 @@ class WorkingSet
     str = <<EOS
 WorkingSet #{object_id}
 Search: #{search}
+Options: #{options}
 Items:
 
 #{items.map(&:inspect).join("\n")}

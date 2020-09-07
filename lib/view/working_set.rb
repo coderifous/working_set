@@ -172,11 +172,16 @@ class View::WorkingSet < View::Base
     with_color @title_win, :blue do
       @title_win.printw title
     end
-    if needs_save?
+    if working_set.options["whole_word"]
       with_color @title_win, :red do
-        @title_win.printw " +"
+        @title_win.printw " [w]"
       end
     end
+    # if needs_save?
+    #   with_color @title_win, :red do
+    #     @title_win.printw " +"
+    #   end
+    # end
     @title_win
   end
 

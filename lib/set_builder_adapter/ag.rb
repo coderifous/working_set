@@ -120,7 +120,7 @@ module SetBuilderAdapter
       # Ag exits 1 when zero results found
       # ... It also exits 1 when there's a problem with options.
       if status.exitstatus == 0 || status.exitstatus == 1
-        WorkingSet.new search, parse_results(stdout)
+        WorkingSet.new search, options, parse_results(stdout)
       else
         raise "ag command failed: #{stdout} #{stderr}"
         # raise "ag command failed with status #{$?.exitstatus.inspect}: #{stdout}"

@@ -64,7 +64,9 @@ class SetViewerActor
   def refresh(_=nil)
     return unless @working_set_view
     # triggers search again without changing search term
-    publish "search_changed", @working_set_view.working_set.search
+    ws = @working_set_view.working_set
+
+    publish "search_changed", ws.search, ws.options
   end
 
   def toggle_match_lines(_)
