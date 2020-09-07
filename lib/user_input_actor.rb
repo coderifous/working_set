@@ -44,6 +44,7 @@ class UserInputActor
     # Creating this otherwise unused window so that I can run getch() without
     # the implicit call to stdscr.refresh that it apparently precipitates.
     trash_win = Ncurses.newwin(1, 1, 0, 0)
+    trash_win.keypad(true)
 
     catch(:shutdown) do
       while(ch = trash_win.getch)
