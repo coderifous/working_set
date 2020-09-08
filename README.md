@@ -3,6 +3,8 @@
 Companion to your editor that makes searching, and using search results for
 jumping around, super nice.
 
+[![Working Set Demo](https://github.com/coderifous/working_set/blob/master/assets/video.png)](https://vimeo.com/455633260)
+
 ## Installation
 
 Installing the gem adds the working_set command to your path.
