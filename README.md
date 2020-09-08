@@ -11,6 +11,10 @@ Installing the gem adds the working_set command to your path.
 
     $ gem install working_set
 
+Working Set uses `ag` "the silver searcher" for super fast searching power:
+
+    $ brew install ag
+
 Install the plugin for your editor.
 
 * [Vim Plugin](https://github.com/coderifous/working-set.vim)
