@@ -5,7 +5,8 @@ class SetViewerActor
     subscribe "tell_selected_item", :tell_selected_item
     subscribe "copy_selected_item", :copy_selected_item
     subscribe "tell_selected_item_content", :tell_selected_item_content
-    subscribe "set_build_finished", :refresh_view
+    subscribe "render_working_set", :render_working_set
+    subscribe "set_build_finished", :render_working_set
     subscribe "set_build_failed", :show_error
     subscribe "scroll_changed", :scroll
     subscribe "context_lines_changed", :update_context_lines
@@ -15,34 +16,17 @@ class SetViewerActor
     subscribe "select_prev_file", :select_prev_file
     subscribe "select_next_item", :select_next_item
     subscribe "select_prev_item", :select_prev_item
-    subscribe "welcome_user", :welcome_user
-    subscribe "display_help", :display_help
-    subscribe "display_working_set", :display_working_set
-    welcome_user
   end
 
-  def welcome_user(_=nil)
-    debug_message "displaying welcome_user!"
-    View::WelcomeUser.render
-  end
-
-  def display_help(_)
-    debug_message "displaying help!"
-    View::Help.render
-  end
-
-  def display_working_set(_)
-    debug_message "displaying working_set!"
-    @working_set_view&.render
-  end
-
-  def refresh_view(_, working_set)
-    prev_wsv = @working_set_view
-    @working_set_view = View::WorkingSet.new(working_set)
-    if prev_wsv&.working_set&.search == working_set.search
-      @working_set_view.restore_selection_state(prev_wsv)
+  def render_working_set(_, working_set = nil)
+    if working_set
+      prev_wsv = @working_set_view
+      @working_set_view = View::WorkingSet.new(working_set)
+      if prev_wsv&.working_set&.search == working_set.search
+        @working_set_view.restore_selection_state(prev_wsv)
+      end
     end
-    @working_set_view.render
+    publish "render_view", @working_set_view
   end
 
   def items_present?

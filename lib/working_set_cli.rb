@@ -99,6 +99,7 @@ class WorkingSetCli
   end
 
   class AppSupervisor < Celluloid::Supervision::Container
+    supervise type: ViewRouterActor,  as: :view_router
     supervise type: SetViewerActor,  as: :set_viewer
     supervise type: SetBuilderActor, as: :set_builder
     supervise type: ApiInputActor,   as: :api_input

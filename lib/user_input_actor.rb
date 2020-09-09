@@ -57,6 +57,10 @@ class UserInputActor
   end
 
   def handle_modal_input(ch)
+    if ch == Ncurses::KEY_RESIZE # window resize
+      publish "window_resized"
+      return
+    end
     case user_input_mode
     when :welcome_user then handle_welcome_user_input(ch)
     when :help         then handle_help_input(ch)
