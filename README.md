@@ -97,8 +97,12 @@ You can press '?' in working_set to see key bindings:
 * Add support for bookmarks.
 * Add support for search history.
 * Add support for customizing key bindings.
-* Document protocol so other plugin editors can exist.
 * Document adapter so other search tools can be used.
+
+## API for Editor Integration
+
+Information for integrating Working Set with your editor can be found
+[here](https://github.com/coderifous/working_set/blob/master/API_FOR_EDITOR_INTEGRATION.md).
 
 ## Development
 
