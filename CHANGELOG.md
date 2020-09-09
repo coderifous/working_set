@@ -1,5 +1,10 @@
 # Change log
 
+## [v1.0.2] - 2020-09-07
+
+### Fixed
+* Views now respond to window resizing with repaint
+
 ## [v1.0.1] - 2020-09-07
 
 ### Fixed
