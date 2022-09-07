@@ -80,22 +80,24 @@ You can press '?' in working_set to see key bindings:
     k          - select previous match
     ctrl-n     - select first match in next file
     ctrl-p     - select first match in previous file
+    <          - go back in search history
+    >          - go forward in search history
+    #          - remove from search history
     enter      - Tell editor to jump to match
     down arrow - scroll down without changing selection
     up arrow   - scroll up without changing selection
     r          - refresh search results
     [          - decrease context lines
     ]          - increase context lines
-    z          - toggle showing match lines vs just matched files
     y          - copy selected match to system clipboard
     Y          - copy selected match + context to system clipboard
+    z          - toggle showing match lines vs just matched files
 
 ## Todo
 * Add support for searching straight from working_set using "/" key.
 * Add support for setting search argument prefix as working_set command argument.
   e.g. --prefix="--ignore=tmp,vendor"
 * Add support for bookmarks.
-* Add support for search history.
 * Add support for customizing key bindings.
 * Document adapter so other search tools can be used.
 
