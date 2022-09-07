@@ -27,7 +27,7 @@ class View::WorkingSet < View::Base
   attr_accessor :working_set, :selected_item_index, :file_index, :scroll_top, :scrollable_height, :show_match_lines
 
   TITLE_ROWS  = 2
-  FOOTER_ROWS = 2
+  FOOTER_ROWS = 3
 
   def self.render(working_set)
     new(working_set).render
@@ -187,10 +187,20 @@ class View::WorkingSet < View::Base
 
   def render_footer
     # Height, Width, Y, X   note: (0 width == full width)
-    @footer_win ||= Ncurses.newwin(1, 0, Ncurses.LINES - 1, 0)
+    height = FOOTER_ROWS - 1
+    @footer_win ||= Ncurses.newwin(height, 0, Ncurses.LINES - height, 0)
     @footer_win.move 0, 0
     with_color @footer_win, :blue do
-      print_field @footer_win, :right, calc_cols(1), "#{selected_item_index + 1} of #{sorted_items.size} (#{file_index.keys.size} files)"
+      history = $supervisor[:set_history]
+      prev_term = history.peek_search_term_back
+      next_term = history.peek_search_term_forward
+      history_msg = [].tap do |a|
+        a << "< #{prev_term}" if prev_term
+        a << "#{next_term} >" if next_term
+      end
+      print_field @footer_win, :left,  calc_cols(1), history_msg.join(" | ")
+      print_field @footer_win, :left,  calc_cols(0.5), "Search History #{history.position + 1} of #{history.entries.size}"
+      print_field @footer_win, :right, calc_cols(0.5), "#{selected_item_index + 1} of #{sorted_items.size} (#{file_index.keys.size} files)"
     end
     @footer_win
   end

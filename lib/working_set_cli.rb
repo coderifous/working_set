@@ -4,7 +4,7 @@
 require 'bundler/setup' if ENV["WORKING_SET_DEV"] == "true"
 
 # External gem dependencies are loaded here.
-require 'celluloid/current'
+require 'celluloid/autostart'
 require 'celluloid/io'
 require 'ncurses'
 require 'clipboard'
@@ -102,6 +102,7 @@ class WorkingSetCli
     supervise type: ViewRouterActor,  as: :view_router
     supervise type: SetViewerActor,  as: :set_viewer
     supervise type: SetBuilderActor, as: :set_builder
+    supervise type: SetHistoryActor, as: :set_history
     supervise type: ApiInputActor,   as: :api_input
     supervise type: UserInputActor,  as: :user_input
 

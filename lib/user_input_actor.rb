@@ -125,6 +125,18 @@ class UserInputActor
       desc: "select first match in previous file",
       action: -> { publish "select_prev_file" }
     },
+    "<" => {
+      desc: "go back in working set history",
+      action: -> { publish "go_back_history" }
+    },
+    ">" => {
+      desc: "go forward in working set history",
+      action: -> { publish "go_forward_history" }
+    },
+    "#" => {
+      desc: "remove search from history",
+      action: -> { publish "remove_from_history" }
+    },
     13 => {
       key_desc: "enter",
       desc: "Tell editor to jump to match",

@@ -19,6 +19,9 @@ class ApiInputActor
     tell_selected_item
     tell_selected_item_content
     show_match_lines_toggled
+    go_back_history
+    go_forward_history
+    remove_from_history
     refresh
   )
 

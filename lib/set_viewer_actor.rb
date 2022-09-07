@@ -6,11 +6,9 @@ class SetViewerActor
     subscribe "copy_selected_item", :copy_selected_item
     subscribe "tell_selected_item_content", :tell_selected_item_content
     subscribe "render_working_set", :render_working_set
-    subscribe "set_build_finished", :render_working_set
     subscribe "set_build_failed", :show_error
     subscribe "scroll_changed", :scroll
     subscribe "context_lines_changed", :update_context_lines
-    subscribe "refresh", :refresh
     subscribe "show_match_lines_toggled", :toggle_match_lines
     subscribe "select_next_file", :select_next_file
     subscribe "select_prev_file", :select_prev_file
@@ -42,15 +40,7 @@ class SetViewerActor
     $CONTEXT_LINES += delta
     $CONTEXT_LINES = 0 if $CONTEXT_LINES < 0
     debug_message "context lines set to #{$CONTEXT_LINES}"
-    refresh
-  end
-
-  def refresh(_=nil)
-    return unless @working_set_view
-    # triggers search again without changing search term
-    ws = @working_set_view.working_set
-
-    publish "search_changed", ws.search, ws.options
+    publish :refresh
   end
 
   def toggle_match_lines(_)
