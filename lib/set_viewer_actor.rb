@@ -14,6 +14,7 @@ class SetViewerActor
     subscribe "select_prev_file", :select_prev_file
     subscribe "select_next_item", :select_next_item
     subscribe "select_prev_item", :select_prev_item
+    subscribe "delete_selected_item", :delete_selected_item
   end
 
   def render_working_set(_, working_set = nil)
@@ -109,6 +110,11 @@ class SetViewerActor
         Clipboard.copy item.match_line
       end
     end
+  end
+
+  def delete_selected_item(_)
+    return unless items_present?
+    @working_set_view.delete_selected_item
   end
 
   def show_error(_, error)

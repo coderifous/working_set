@@ -20,6 +20,10 @@ class WorkingSet
     end
   end
 
+  def remove(item)
+    items.delete item
+  end
+
   def inspect
     str = <<EOS
 WorkingSet #{object_id}

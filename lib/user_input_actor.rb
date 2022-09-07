@@ -115,6 +115,10 @@ class UserInputActor
       desc: "select previous match",
       action: -> { publish "select_prev_item" }
     },
+    "d" => {
+      desc: "delete selected item",
+      action: -> { publish "delete_selected_item" }
+    },
     14 => {
       key_desc: "ctrl-n",
       desc: "select first match in next file",

@@ -136,6 +136,16 @@ class View::WorkingSet < View::Base
     render_items_and_footer
   end
 
+  def delete_selected_item
+    working_set.remove(selected_item)
+    items_changed!
+    if selected_item.nil?
+      self.selected_item_index -= 1 if selected_item_index > 0
+    end
+    # render_items_and_footer
+    render
+  end
+
   def scroll(delta)
     return if @scrollable_line_count <= scrollable_height
     set_scroll_top(scroll_top + delta)
@@ -318,6 +328,13 @@ class View::WorkingSet < View::Base
 
   def calc_cols(percentage)
     (Ncurses.COLS * percentage).to_i
+  end
+
+  private
+
+  def items_changed!
+    @_sorted_items = nil
+    self.file_index = index_files(working_set)
   end
 
 end
