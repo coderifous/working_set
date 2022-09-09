@@ -129,17 +129,29 @@ class UserInputActor
       desc: "select first match in previous file",
       action: -> { publish "select_prev_file" }
     },
+    "r" => {
+      desc: "refresh search results",
+      action: -> { publish "refresh" }
+    },
     "<" => {
-      desc: "go back in working set history",
+      desc: "go back in search history",
       action: -> { publish "go_back_history" }
     },
     ">" => {
-      desc: "go forward in working set history",
+      desc: "go forward in search history",
       action: -> { publish "go_forward_history" }
     },
     "#" => {
       desc: "remove search from history",
       action: -> { publish "remove_from_history" }
+    },
+    "m" => {
+      desc: "toggle between manual working set (pins) and searches",
+      action: -> { publish "toggle_view_type" }
+    },
+    "x" => {
+      desc: "toggle item for inclusion in manual working set (pin/unpin)",
+      action: -> { publish "toggle_pin_selected_item" }
     },
     13 => {
       key_desc: "enter",
@@ -155,10 +167,6 @@ class UserInputActor
       key_desc: "up arrow",
       desc: "scroll up without changing selection",
       action: -> { publish "scroll_changed", DEFAULT_SCROLL_STEP * -1 }
-    },
-    "r" => {
-      desc: "refresh search results",
-      action: -> { publish "refresh" }
     },
     "[" => {
       desc: "decrease context lines",

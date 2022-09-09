@@ -1,5 +1,5 @@
 class WorkingSetItem
-  attr_accessor :file_path, :row, :column, :pinned, :match_line, :pre_match_lines, :post_match_lines
+  attr_accessor :file_path, :row, :column, :match_line, :pre_match_lines, :post_match_lines
 
   def initialize(props = {})
     self.file_path        = props[:file_path]
@@ -8,7 +8,6 @@ class WorkingSetItem
     self.pre_match_lines  = props[:pre_match_lines]  || []
     self.match_line       = props[:match_line]       || ""
     self.post_match_lines = props[:post_match_lines] || []
-    self.pinned           = !!props[:pinned]
   end
 
   def inspect

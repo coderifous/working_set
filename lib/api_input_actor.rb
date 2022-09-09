@@ -23,6 +23,7 @@ class ApiInputActor
     go_back_history
     go_forward_history
     remove_from_history
+    resume_history
     refresh
   )
 

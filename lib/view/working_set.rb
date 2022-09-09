@@ -259,7 +259,12 @@ class View::WorkingSet < View::Base
         end
 
         # Print match line.
-        print_scrollable_item 0, :blue, "#{item == selected_item ? ">" : " "}"
+        indicator = item == selected_item ? "►" : " "
+        print_scrollable_item 0, :cyan, indicator
+
+        indicator = $supervisor[:set_viewer].pinned?(item) ? "★" : " "
+        print_scrollable_item 1, :yellow, indicator
+
         print_scrollable_item 2, :yellow, item.row
         puts_scrollable_item 5, :yellow, item.match_line
 

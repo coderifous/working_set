@@ -1,7 +1,11 @@
 class SetViewerActor
   include BasicActor
 
+  attr_reader :view_type, :manual_working_set
+
   def initialize
+    @view_type = :search # other option: :manual
+    @manual_working_set = WorkingSet.new(name: "Pinned")
     subscribe "tell_selected_item", :tell_selected_item
     subscribe "copy_selected_item", :copy_selected_item
     subscribe "tell_selected_item_content", :tell_selected_item_content
@@ -15,6 +19,34 @@ class SetViewerActor
     subscribe "select_next_item", :select_next_item
     subscribe "select_prev_item", :select_prev_item
     subscribe "delete_selected_item", :delete_selected_item
+    subscribe "toggle_view_type", :toggle_view_type
+    subscribe "toggle_pin_selected_item", :toggle_pin_selected_item
+  end
+
+  def toggle_view_type(_)
+    if view_type == :search
+      @view_type = :manual
+      render_working_set nil, manual_working_set
+    else
+      @view_type = :search
+      publish "resume_history"
+    end
+  end
+
+  def toggle_pin_selected_item(_)
+    return unless items_present?
+    item = @working_set_view.selected_item
+    if pinned?(item)
+      if @view_type == :manual
+        delete_selected_item(nil)
+      else
+        manual_working_set.remove(item)
+        @working_set_view.render_items_and_footer
+      end
+    else
+      manual_working_set.add(item)
+      @working_set_view.render_items_and_footer
+    end
   end
 
   def render_working_set(_, working_set = nil)
@@ -121,6 +153,10 @@ class SetViewerActor
     debug_message error
     # Ncurses.stdscr.mvaddstr 0, 0, "SetViewerActor#show_error: #{error.backtrace}"
     # Ncurses.stdscr.refresh
+  end
+
+  def pinned?(item)
+    manual_working_set.items.include?(item)
   end
 
 end

@@ -8,6 +8,7 @@ class SetHistoryActor
     subscribe "go_back_history",      :go_back_history
     subscribe "go_forward_history",   :go_forward_history
     subscribe "remove_from_history",  :remove_from_history
+    subscribe "resume_history",       :resume_history
     subscribe "refresh",              :request_refresh
     subscribe "set_refresh_finished", :refresh_finished
 
@@ -55,6 +56,10 @@ class SetHistoryActor
   def go_forward_history(_)
     return if position >= entries.size - 1
     self.position += 1
+    position_changed!
+  end
+
+  def resume_history(_)
     position_changed!
   end
 
