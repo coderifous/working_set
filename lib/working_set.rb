@@ -1,11 +1,12 @@
 require 'set'
 
 class WorkingSet
-  attr_accessor :search, :options, :items, :name, :note, :saved
+  attr_accessor :name, :search, :options, :items, :note, :saved
 
   VERSION = "1.1.0"
 
-  def initialize(search = nil, options = nil, items = [])
+  def initialize(name: nil, search: nil, options: {}, items: [])
+    self.name    = name
     self.search  = search
     self.options = options
     self.items   = []
