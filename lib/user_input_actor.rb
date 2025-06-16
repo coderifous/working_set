@@ -188,6 +188,14 @@ class UserInputActor
       desc: "copy selected match + context to system clipboard",
       action: -> { publish "copy_selected_item", true }
     },
+    "c" => {
+      desc: "copy selected file path to system clipboard",
+      action: -> { publish "copy_selected_file_path" }
+    },
+    "C" => {
+      desc: "copy all matching file paths to system clipboard", 
+      action: -> { publish "copy_all_file_paths" }
+    },
   }
 
   def handle_working_set_input(ch)

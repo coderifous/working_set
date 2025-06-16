@@ -9,6 +9,8 @@ class SetViewerActor
     subscribe "tell_selected_item", :tell_selected_item
     subscribe "copy_selected_item", :copy_selected_item
     subscribe "tell_selected_item_content", :tell_selected_item_content
+    subscribe "copy_selected_file_path", :copy_selected_file_path
+    subscribe "copy_all_file_paths", :copy_all_file_paths
     subscribe "render_working_set", :render_working_set
     subscribe "set_build_failed", :show_error
     subscribe "scroll_changed", :scroll
@@ -141,6 +143,20 @@ class SetViewerActor
       else
         Clipboard.copy item.match_line
       end
+    end
+  end
+
+  def copy_selected_file_path(_)
+    if items_present?
+      item = @working_set_view.selected_item
+      Clipboard.copy item.file_path
+    end
+  end
+
+  def copy_all_file_paths(_)
+    if items_present?
+      file_paths = @working_set_view.working_set.items.map(&:file_path).uniq
+      Clipboard.copy file_paths.join(" ")
     end
   end
 
