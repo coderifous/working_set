@@ -24,7 +24,7 @@
 # * Highlight "selected item" with colors.
 
 class View::WorkingSet < View::Base
-  attr_accessor :working_set, :selected_item_index, :file_index, :scroll_top, :scrollable_height, :show_match_lines
+  attr_accessor :working_set, :selected_item_index, :file_index, :scroll_top, :scrollable_height, :show_match_lines, :status_message
 
   TITLE_ROWS  = 2
   FOOTER_ROWS = 3
@@ -146,6 +146,15 @@ class View::WorkingSet < View::Base
     render
   end
 
+  def show_status_message(message)
+    self.status_message = message
+    render_footer.refresh
+  end
+
+  def clear_status_message
+    self.status_message = nil
+  end
+
   def scroll(delta)
     return if @scrollable_line_count <= scrollable_height
     set_scroll_top(scroll_top + delta)
@@ -199,18 +208,28 @@ class View::WorkingSet < View::Base
     # Height, Width, Y, X   note: (0 width == full width)
     height = FOOTER_ROWS - 1
     @footer_win ||= Ncurses.newwin(height, 0, Ncurses.LINES - height, 0)
+    @footer_win.clear
     @footer_win.move 0, 0
-    with_color @footer_win, :blue do
-      history = $supervisor[:set_history]
-      prev_term = history.peek_search_term_back
-      next_term = history.peek_search_term_forward
-      history_msg = [].tap do |a|
-        a << "< #{prev_term}" if prev_term
-        a << "#{next_term} >" if next_term
+    
+    if status_message
+      # Show status message
+      with_color @footer_win, :green do
+        print_field @footer_win, :center, calc_cols(1), status_message
       end
-      print_field @footer_win, :left,  calc_cols(1), history_msg.join(" | ")
-      print_field @footer_win, :left,  calc_cols(0.5), "Search History #{history.position + 1} of #{history.entries.size}"
-      print_field @footer_win, :right, calc_cols(0.5), "#{selected_item_index + 1} of #{sorted_items.size} (#{file_index.keys.size} files)"
+    else
+      # Show normal footer content
+      with_color @footer_win, :blue do
+        history = $supervisor[:set_history]
+        prev_term = history.peek_search_term_back
+        next_term = history.peek_search_term_forward
+        history_msg = [].tap do |a|
+          a << "< #{prev_term}" if prev_term
+          a << "#{next_term} >" if next_term
+        end
+        print_field @footer_win, :left,  calc_cols(1), history_msg.join(" | ")
+        print_field @footer_win, :left,  calc_cols(0.5), "Search History #{history.position + 1} of #{history.entries.size}"
+        print_field @footer_win, :right, calc_cols(0.5), "#{selected_item_index + 1} of #{sorted_items.size} (#{file_index.keys.size} files)"
+      end
     end
     @footer_win
   end
@@ -328,7 +347,13 @@ class View::WorkingSet < View::Base
   end
 
   def print_field(window, align, width, content)
-    window.printw "%#{align == :left ? "-" : ""}#{width}s", content
+    if align == :center
+      padding = [(width - content.length) / 2, 0].max
+      padded_content = " " * padding + content
+      window.printw "%-#{width}s", padded_content
+    else
+      window.printw "%#{align == :left ? "-" : ""}#{width}s", content
+    end
   end
 
   def calc_cols(percentage)

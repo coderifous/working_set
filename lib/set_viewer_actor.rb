@@ -1,7 +1,7 @@
 class SetViewerActor
   include BasicActor
 
-  attr_reader :view_type, :manual_working_set
+  attr_reader :view_type, :manual_working_set, :status_timer
 
   def initialize
     @view_type = :search # other option: :manual
@@ -11,6 +11,7 @@ class SetViewerActor
     subscribe "tell_selected_item_content", :tell_selected_item_content
     subscribe "copy_selected_file_path", :copy_selected_file_path
     subscribe "copy_all_file_paths", :copy_all_file_paths
+    subscribe "show_status_message", :show_status_message
     subscribe "render_working_set", :render_working_set
     subscribe "set_build_failed", :show_error
     subscribe "scroll_changed", :scroll
@@ -150,6 +151,7 @@ class SetViewerActor
     if items_present?
       item = @working_set_view.selected_item
       Clipboard.copy item.file_path
+      publish "show_status_message", "Copied path"
     end
   end
 
@@ -157,6 +159,18 @@ class SetViewerActor
     if items_present?
       file_paths = @working_set_view.working_set.items.map(&:file_path).uniq
       Clipboard.copy file_paths.join(" ")
+      publish "show_status_message", "Copied #{file_paths.count} paths"
+    end
+  end
+
+  def show_status_message(_, message)
+    @working_set_view.show_status_message(message)
+    
+    # Clear the status message after 2 seconds
+    @status_timer&.cancel rescue nil
+    @status_timer = after(2) do
+      @working_set_view.clear_status_message
+      @working_set_view.render_footer.refresh
     end
   end
 
